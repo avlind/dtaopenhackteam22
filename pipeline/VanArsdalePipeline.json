@@ -1,5 +1,5 @@
 {
-	"name": "VanArsdaleSQLPipeline",
+	"name": "VanArsdalePipeline",
 	"properties": {
 		"activities": [
 			{
