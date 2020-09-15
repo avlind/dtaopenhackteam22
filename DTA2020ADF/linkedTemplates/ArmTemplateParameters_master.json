@@ -1,0 +1,45 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "DTA2020ADF"
+		},
+		"AzureBlobStorageForStaging_connectionString": {
+			"value": ""
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": ""
+		},
+		"CloudSalesDB_connectionString": {
+			"value": ""
+		},
+		"FourthCoffeeVM_password": {
+			"value": ""
+		},
+		"SouthRidgeMovieCosmosDB_connectionString": {
+			"value": ""
+		},
+		"VanArsdaleOnPremSQLSource_connectionString": {
+			"value": ""
+		},
+		"datalake_accountKey": {
+			"value": ""
+		},
+		"FourthCoffeeVM_properties_typeProperties_host": {
+			"value": "c:\\rentals\\"
+		},
+		"FourthCoffeeVM_properties_typeProperties_userId": {
+			"value": "southridge"
+		},
+		"datalake_properties_typeProperties_url": {
+			"value": "https://dta2020mdwohteam22.dfs.core.windows.net"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}

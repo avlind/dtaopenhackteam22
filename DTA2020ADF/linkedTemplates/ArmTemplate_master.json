@@ -1,0 +1,132 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "DTA2020ADF"
+		},
+		"AzureBlobStorageForStaging_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageForStaging'"
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
+		"CloudSalesDB_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CloudSalesDB'"
+		},
+		"FourthCoffeeVM_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'FourthCoffeeVM'"
+		},
+		"SouthRidgeMovieCosmosDB_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SouthRidgeMovieCosmosDB'"
+		},
+		"VanArsdaleOnPremSQLSource_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'VanArsdaleOnPremSQLSource'"
+		},
+		"datalake_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'datalake'"
+		},
+		"FourthCoffeeVM_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "c:\\rentals\\"
+		},
+		"FourthCoffeeVM_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "southridge"
+		},
+		"datalake_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dta2020mdwohteam22.dfs.core.windows.net"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "DTA2020ADF_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureBlobStorageForStaging_connectionString": {
+						"value": "[parameters('AzureBlobStorageForStaging_connectionString')]"
+					},
+					"AzureSqlDatabase1_connectionString": {
+						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
+					},
+					"CloudSalesDB_connectionString": {
+						"value": "[parameters('CloudSalesDB_connectionString')]"
+					},
+					"SouthRidgeMovieCosmosDB_connectionString": {
+						"value": "[parameters('SouthRidgeMovieCosmosDB_connectionString')]"
+					},
+					"datalake_accountKey": {
+						"value": "[parameters('datalake_accountKey')]"
+					},
+					"FourthCoffeeVM_password": {
+						"value": "[parameters('FourthCoffeeVM_password')]"
+					},
+					"VanArsdaleOnPremSQLSource_connectionString": {
+						"value": "[parameters('VanArsdaleOnPremSQLSource_connectionString')]"
+					},
+					"datalake_properties_typeProperties_url": {
+						"value": "[parameters('datalake_properties_typeProperties_url')]"
+					},
+					"FourthCoffeeVM_properties_typeProperties_host": {
+						"value": "[parameters('FourthCoffeeVM_properties_typeProperties_host')]"
+					},
+					"FourthCoffeeVM_properties_typeProperties_userId": {
+						"value": "[parameters('FourthCoffeeVM_properties_typeProperties_userId')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "DTA2020ADF_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'DTA2020ADF_ArmTemplate_0')]"
+			]
+		}
+	]
+}
