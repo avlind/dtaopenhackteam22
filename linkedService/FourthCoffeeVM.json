@@ -1,0 +1,17 @@
+{
+	"name": "FourthCoffeeVM",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "FileServer",
+		"typeProperties": {
+			"host": "c:\\rentals\\",
+			"userId": "southridge",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI1MTUwNjRiOS0wNmNlLTRhNzAtYWJmMC02NjNjYTk1ZDc1ZDgiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "FourthCoffeeVMIR",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

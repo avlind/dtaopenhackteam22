@@ -1,0 +1,22 @@
+{
+	"name": "DestinationDataset_ahf",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "datalake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "SouthRidge/MovieCatalog",
+				"fileSystem": "mdwsourcefiles"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
