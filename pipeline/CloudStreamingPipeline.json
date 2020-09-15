@@ -1,9 +1,9 @@
 {
-	"name": "VanArsdaleSQLPipeline",
+	"name": "CloudStreamingPipeline",
 	"properties": {
 		"activities": [
 			{
-				"name": "ForEach_pi6",
+				"name": "ForEach_dea",
 				"type": "ForEach",
 				"dependsOn": [],
 				"userProperties": [],
@@ -14,7 +14,7 @@
 					},
 					"activities": [
 						{
-							"name": "Copy_pi6",
+							"name": "Copy_dea",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -31,12 +31,12 @@
 								},
 								{
 									"name": "Destination",
-									"value": "mdwsourcefiles/VanArsdel/@{item().destination.fileName}"
+									"value": "mdwsourcefiles/SouthRidge/StreamingSales/@{item().destination.fileName}"
 								}
 							],
 							"typeProperties": {
 								"source": {
-									"type": "SqlServerSource",
+									"type": "AzureSqlSource",
 									"partitionOption": "None"
 								},
 								"sink": {
@@ -50,18 +50,12 @@
 										"fileExtension": ".txt"
 									}
 								},
-								"enableStaging": true,
-								"stagingSettings": {
-									"linkedServiceName": {
-										"referenceName": "AzureBlobStorageForStaging",
-										"type": "LinkedServiceReference"
-									},
-									"path": ""
-								}
+								"enableStaging": false,
+								"validateDataConsistency": false
 							},
 							"inputs": [
 								{
-									"referenceName": "SourceDataset_pi6",
+									"referenceName": "SourceDataset_dea",
 									"type": "DatasetReference",
 									"parameters": {
 										"cw_table": "@item().source.table"
@@ -70,7 +64,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "DestinationDataset_pi6",
+									"referenceName": "DestinationDataset_dea",
 									"type": "DatasetReference",
 									"parameters": {
 										"cw_fileName": "@item().destination.fileName"
@@ -88,10 +82,10 @@
 				"defaultValue": [
 					{
 						"source": {
-							"table": "Actors"
+							"table": "Addresses"
 						},
 						"destination": {
-							"fileName": "dboActors.txt"
+							"fileName": "dboAddresses.txt"
 						}
 					},
 					{
@@ -100,30 +94,6 @@
 						},
 						"destination": {
 							"fileName": "dboCustomers.txt"
-						}
-					},
-					{
-						"source": {
-							"table": "MovieActors"
-						},
-						"destination": {
-							"fileName": "dboMovieActors.txt"
-						}
-					},
-					{
-						"source": {
-							"table": "Movies"
-						},
-						"destination": {
-							"fileName": "dboMovies.txt"
-						}
-					},
-					{
-						"source": {
-							"table": "OnlineMovieMappings"
-						},
-						"destination": {
-							"fileName": "dboOnlineMovieMappings.txt"
 						}
 					},
 					{
@@ -138,7 +108,7 @@
 			}
 		},
 		"annotations": [],
-		"lastPublishTime": "2020-09-15T22:03:35Z"
+		"lastPublishTime": "2020-09-15T20:30:59Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }

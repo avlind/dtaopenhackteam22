@@ -1,9 +1,9 @@
 {
-	"name": "CopyPipeline_dea",
+	"name": "CloudSalesPipeline",
 	"properties": {
 		"activities": [
 			{
-				"name": "ForEach_dea",
+				"name": "ForEach_6hw",
 				"type": "ForEach",
 				"dependsOn": [],
 				"userProperties": [],
@@ -14,7 +14,7 @@
 					},
 					"activities": [
 						{
-							"name": "Copy_dea",
+							"name": "Copy_6hw",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -31,7 +31,7 @@
 								},
 								{
 									"name": "Destination",
-									"value": "mdwsourcefiles/SouthRidge/StreamingSales/@{item().destination.fileName}"
+									"value": "mdwsourcefiles/SouthRidge/DVDSales/@{item().destination.fileName}"
 								}
 							],
 							"typeProperties": {
@@ -51,11 +51,12 @@
 									}
 								},
 								"enableStaging": false,
+								"enableSkipIncompatibleRow": true,
 								"validateDataConsistency": false
 							},
 							"inputs": [
 								{
-									"referenceName": "SourceDataset_dea",
+									"referenceName": "SourceDataset_6hw",
 									"type": "DatasetReference",
 									"parameters": {
 										"cw_table": "@item().source.table"
@@ -64,7 +65,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "DestinationDataset_dea",
+									"referenceName": "DestinationDataset_6hw",
 									"type": "DatasetReference",
 									"parameters": {
 										"cw_fileName": "@item().destination.fileName"
@@ -98,17 +99,25 @@
 					},
 					{
 						"source": {
-							"table": "Transactions"
+							"table": "OrderDetails"
 						},
 						"destination": {
-							"fileName": "dboTransactions.txt"
+							"fileName": "dboOrderDetails.txt"
+						}
+					},
+					{
+						"source": {
+							"table": "Orders"
+						},
+						"destination": {
+							"fileName": "dboOrders.txt"
 						}
 					}
 				]
 			}
 		},
 		"annotations": [],
-		"lastPublishTime": "2020-09-15T20:30:59Z"
+		"lastPublishTime": "2020-09-15T20:12:58Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }
