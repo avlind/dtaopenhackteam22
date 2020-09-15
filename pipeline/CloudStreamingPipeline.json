@@ -1,5 +1,5 @@
 {
-	"name": "CopyPipeline_dea",
+	"name": "CloudStreamingPipeline",
 	"properties": {
 		"activities": [
 			{

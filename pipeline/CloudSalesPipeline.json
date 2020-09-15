@@ -1,5 +1,5 @@
 {
-	"name": "CopyCloudsales",
+	"name": "CloudSalesPipeline",
 	"properties": {
 		"activities": [
 			{
