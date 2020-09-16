@@ -1,9 +1,9 @@
 {
-	"name": "Southridgesalesdvdcurated",
+	"name": "SouthridgeDVDSalesCuratedPipeline",
 	"properties": {
 		"activities": [
 			{
-				"name": "SouthridgeDVDSalesCuratedPipeline",
+				"name": "DataFlowDVDSalesCuratedFile",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {

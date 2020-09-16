@@ -1,5 +1,5 @@
 {
-	"name": "MovieCatalogPipeline",
+	"name": "MovieCatalogRawPipeline",
 	"properties": {
 		"activities": [
 			{

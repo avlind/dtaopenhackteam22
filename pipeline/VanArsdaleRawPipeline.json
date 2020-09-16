@@ -1,5 +1,5 @@
 {
-	"name": "VanArsdalePipeline",
+	"name": "VanArsdaleRawPipeline",
 	"properties": {
 		"activities": [
 			{
