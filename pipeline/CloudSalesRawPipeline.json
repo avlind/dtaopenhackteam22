@@ -1,5 +1,5 @@
 {
-	"name": "CloudSalesPipeline",
+	"name": "CloudSalesRawPipeline",
 	"properties": {
 		"description": "Aaron Updated Description",
 		"activities": [
