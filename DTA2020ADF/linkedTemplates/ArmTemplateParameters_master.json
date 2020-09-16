@@ -35,6 +35,9 @@
 		"datalake_properties_typeProperties_url": {
 			"value": "https://dta2020mdwohteam22.dfs.core.windows.net"
 		},
+		"AzureKeyVaultLinkedService_properties_typeProperties_baseUrl": {
+			"value": "https://dta2020mdwteam22kv.vault.azure.net/"
+		},
 		"containerUri": {
 			"value": ""
 		},

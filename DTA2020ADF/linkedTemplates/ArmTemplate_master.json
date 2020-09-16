@@ -47,6 +47,10 @@
 			"type": "string",
 			"defaultValue": "https://dta2020mdwohteam22.dfs.core.windows.net"
 		},
+		"AzureKeyVaultLinkedService_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://dta2020mdwteam22kv.vault.azure.net/"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -97,6 +101,9 @@
 					},
 					"datalake_properties_typeProperties_url": {
 						"value": "[parameters('datalake_properties_typeProperties_url')]"
+					},
+					"AzureKeyVaultLinkedService_properties_typeProperties_baseUrl": {
+						"value": "[parameters('AzureKeyVaultLinkedService_properties_typeProperties_baseUrl')]"
 					},
 					"FourthCoffeeVM_properties_typeProperties_host": {
 						"value": "[parameters('FourthCoffeeVM_properties_typeProperties_host')]"
