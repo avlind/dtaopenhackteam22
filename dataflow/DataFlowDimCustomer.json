@@ -10,19 +10,33 @@
 						"type": "DatasetReference"
 					},
 					"name": "SRDVDSalesCustomerRawOutput"
+				},
+				{
+					"dataset": {
+						"referenceName": "SRDVDSalesCustomerAddressesFlatFile",
+						"type": "DatasetReference"
+					},
+					"name": "SRDVDSalesCustomerAddressesOutput"
 				}
 			],
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "CustomerOutputCurated",
+						"referenceName": "CustomerDimCurated",
 						"type": "DatasetReference"
 					},
-					"name": "sink2demo"
+					"name": "WritetoCustomerDimCurated"
 				}
 			],
-			"transformations": [],
-			"script": "source(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as date 'MM/dd/yyyy',\n\t\tUpdatedDate as date 'MM/dd/yyyy'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> SRDVDSalesCustomerRawOutput\nSRDVDSalesCustomerRawOutput sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2demo"
+			"transformations": [
+				{
+					"name": "JoinCustomertoAddy"
+				},
+				{
+					"name": "DerviceColumnsForCustomerDim"
+				}
+			],
+			"script": "source(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as date 'MM/dd/yyyy',\n\t\tUpdatedDate as date 'MM/dd/yyyy'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> SRDVDSalesCustomerRawOutput\nsource(output(\n\t\tAddressID as string,\n\t\tCustomerID as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as string,\n\t\tCreatedDate as date,\n\t\tUpdatedDate as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> SRDVDSalesCustomerAddressesOutput\nSRDVDSalesCustomerRawOutput, SRDVDSalesCustomerAddressesOutput join(SRDVDSalesCustomerRawOutput@CustomerID == SRDVDSalesCustomerAddressesOutput@CustomerID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinCustomertoAddy\nJoinCustomertoAddy derive(sourcesystemid = \"southridgedvd\",\n\t\tMasterCreateDate = greatest(SRDVDSalesCustomerAddressesOutput@CreatedDate,SRDVDSalesCustomerRawOutput@CreatedDate ),\n\t\tMasterUpdateDate = greatest(SRDVDSalesCustomerRawOutput@UpdatedDate,SRDVDSalesCustomerAddressesOutput@UpdatedDate)) ~> DerviceColumnsForCustomerDim\nDerviceColumnsForCustomerDim sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['CustomerDim'],\n\tmapColumn(\n\t\tCustomerID = SRDVDSalesCustomerRawOutput@CustomerID,\n\t\tLastName,\n\t\tFirstName,\n\t\tPhoneNumber,\n\t\tCreatedDate = SRDVDSalesCustomerRawOutput@CreatedDate,\n\t\tUpdatedDate = SRDVDSalesCustomerRawOutput@UpdatedDate,\n\t\tAddressID,\n\t\tCustomerID = SRDVDSalesCustomerAddressesOutput@CustomerID,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tState,\n\t\tZipCode,\n\t\tCreatedDate = SRDVDSalesCustomerAddressesOutput@CreatedDate,\n\t\tUpdatedDate = SRDVDSalesCustomerAddressesOutput@UpdatedDate,\n\t\tsourcesystemid,\n\t\tCreateDate = MasterCreateDate,\n\t\tUpdateDate = MasterUpdateDate\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapOutputs: true) ~> WritetoCustomerDimCurated"
 		}
 	}
 }
