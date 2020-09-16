@@ -1,0 +1,20 @@
+{
+	"name": "CloudStreamingCuratedPipeline",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "FSCSV",
+						"type": "DatasetReference"
+					},
+					"name": "FStoCuratedSource"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100) ~> FStoCuratedSource"
+		}
+	}
+}
