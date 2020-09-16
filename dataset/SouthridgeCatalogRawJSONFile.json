@@ -1,0 +1,77 @@
+{
+	"name": "SouthridgeCatalogRawJSONFile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "datalake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "data_dc3e4f6e-825b-4554-b20a-6daa8b6c7220_f2c89301-b967-4dfc-af05-96778bccce32.json",
+				"folderPath": "SouthRidge/MovieCatalog",
+				"fileSystem": "mdwsourcefiles"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"actors": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"name": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"availabilityDate": {
+					"type": "string"
+				},
+				"genre": {
+					"type": "string"
+				},
+				"rating": {
+					"type": "string"
+				},
+				"releaseYear": {
+					"type": "integer"
+				},
+				"runtime": {
+					"type": "integer"
+				},
+				"streamingAvailabilityDate": {
+					"type": "string"
+				},
+				"tier": {
+					"type": "integer"
+				},
+				"title": {
+					"type": "string"
+				},
+				"id": {
+					"type": "string"
+				},
+				"_rid": {
+					"type": "string"
+				},
+				"_self": {
+					"type": "string"
+				},
+				"_etag": {
+					"type": "string"
+				},
+				"_attachments": {
+					"type": "string"
+				},
+				"_ts": {
+					"type": "integer"
+				}
+			}
+		}
+	}
+}
