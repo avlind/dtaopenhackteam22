@@ -12,9 +12,17 @@
 					"name": "FStoCuratedSource"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DLT",
+						"type": "DatasetReference"
+					},
+					"name": "CuratedStreaming"
+				}
+			],
 			"transformations": [],
-			"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100) ~> FStoCuratedSource"
+			"script": "source(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tStreamStart as date,\n\t\tStreamEnd as date,\n\t\tCreatedDate as date,\n\t\tUpdatedDate as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100,\n\tpartitionBy('hash', 1)) ~> FStoCuratedSource\nFStoCuratedSource sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['CuratedStreaming.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> CuratedStreaming"
 		}
 	}
 }
