@@ -1,0 +1,37 @@
+{
+	"name": "FourthCoffeeActorsRawFile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "datalake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Actors.csv",
+				"folderPath": "FourthCoffee",
+				"fileSystem": "mdwsourcefiles"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "ActorID",
+				"type": "String"
+			},
+			{
+				"name": "ActorName",
+				"type": "String"
+			},
+			{
+				"name": "Gender",
+				"type": "String"
+			}
+		]
+	}
+}
