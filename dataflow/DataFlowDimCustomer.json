@@ -1,6 +1,7 @@
 {
 	"name": "DataFlowDimCustomer",
 	"properties": {
+		"description": "testing",
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
