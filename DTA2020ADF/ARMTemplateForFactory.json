@@ -452,6 +452,49 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Southridgesalesdvdcurated')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "salesdvdsalescurated",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow1",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"southridgdvdesalesorders": {},
+									"southridgdvdesalesdetails": {},
+									"southridgedvdsalescurated": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/VanArsdalePipeline')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1542,56 +1585,13 @@
 							"name": "sourceid"
 						}
 					],
-					"script": "source(output(\n\t\tOrderID as string,\n\t\tCustomerID as string,\n\t\tOrderDate as date 'MM/dd/yyyy',\n\t\tShipDate as date 'MM/dd/yyyy',\n\t\tTotalCost as double '$#########.###',\n\t\tCreatedDate as date 'MM/dd/yyyy',\n\t\tUpdatedDate as date 'MM/dd/yyyy'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> southridgdvdesalesorders\nsource(output(\n\t\tOrderDetailID as string,\n\t\tOrderID as string,\n\t\tMovieID as string,\n\t\tQuantity as integer '##0',\n\t\tUnitCost as double '$#########.###',\n\t\tLineNumber as string,\n\t\tCreatedDate as date 'MM/dd/yyyy',\n\t\tUpdatedDate as date 'MM/dd/yyyy'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> southridgdvdesalesdetails\nsouthridgdvdesalesdetails, southridgdvdesalesorders join(southridgdvdesalesdetails@OrderID == southridgdvdesalesorders@OrderID,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> Join2\nJoin2 derive(sourcesystemid = \"southridgedvd\",\n\t\tsalesorderGUID = uuid()) ~> sourceid\nsourceid sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['southridgesalesdvdcurated.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> southridgedvdsalescurated"
+					"script": "source(output(\n\t\tOrderID as string,\n\t\tCustomerID as string,\n\t\tOrderDate as timestamp,\n\t\tShipDate as date 'MM/dd/yyyy',\n\t\tTotalCost as double,\n\t\tCreatedDate as date 'MM/dd/yyyy',\n\t\tUpdatedDate as date 'MM/dd/yyyy'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> southridgdvdesalesorders\nsource(output(\n\t\tOrderDetailID as string,\n\t\tOrderID as string,\n\t\tMovieID as string,\n\t\tQuantity as integer '##0',\n\t\tUnitCost as double '$#########.###',\n\t\tLineNumber as string,\n\t\tCreatedDate as date 'MM/dd/yyyy',\n\t\tUpdatedDate as date 'MM/dd/yyyy'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> southridgdvdesalesdetails\nsouthridgdvdesalesdetails, southridgdvdesalesorders join(southridgdvdesalesdetails@OrderID == southridgdvdesalesorders@OrderID,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> Join2\nJoin2 derive(sourcesystemid = \"southridgedvd\",\n\t\tsalesorderGUID = uuid()) ~> sourceid\nsourceid sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['southridgesalesdvdcurated.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> southridgedvdsalescurated"
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SalesOrdersRaw')]",
 				"[concat(variables('factoryId'), '/datasets/southridgdvdesalesDetails')]",
 				"[concat(variables('factoryId'), '/datasets/southridgedvdsalescurate')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Southridgesalesdvdcurated')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "salesdvdsalescurated",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "dataflow1",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"southridgdvdesalesorders": {},
-									"southridgdvdesalesdetails": {},
-									"southridgedvdsalescurated": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							}
-						}
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
 			]
 		}
 	]
