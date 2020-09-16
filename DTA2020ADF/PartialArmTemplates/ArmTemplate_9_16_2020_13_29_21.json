@@ -1,0 +1,61 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "DTA2020ADF"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SalesOrdersRaw",
+								"type": "DatasetReference"
+							},
+							"name": "southridgdvdesalesorders"
+						},
+						{
+							"dataset": {
+								"referenceName": "southridgdvdesalesDetails",
+								"type": "DatasetReference"
+							},
+							"name": "southridgdvdesalesdetails"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "southridgedvdsalescurate",
+								"type": "DatasetReference"
+							},
+							"name": "southridgedvdsalescurated"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Join2"
+						},
+						{
+							"name": "sourceid"
+						}
+					],
+					"script": "source(output(\n\t\tOrderID as string,\n\t\tCustomerID as string,\n\t\tOrderDate as timestamp,\n\t\tShipDate as timestamp,\n\t\tTotalCost as double,\n\t\tCreatedDate as timestamp,\n\t\tUpdatedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> southridgdvdesalesorders\nsource(output(\n\t\tOrderDetailID as string,\n\t\tOrderID as string,\n\t\tMovieID as string,\n\t\tQuantity as integer,\n\t\tUnitCost as double,\n\t\tLineNumber as string,\n\t\tCreatedDate as timestamp,\n\t\tUpdatedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> southridgdvdesalesdetails\nsouthridgdvdesalesdetails, southridgdvdesalesorders join(southridgdvdesalesdetails@OrderID == southridgdvdesalesorders@OrderID,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> Join2\nJoin2 derive(sourcesystemid = \"southridgedvd\",\n\t\tsalesorderGUID = uuid()) ~> sourceid\nsourceid sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['southridgesalesdvdcurated.csv'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> southridgedvdsalescurated"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
