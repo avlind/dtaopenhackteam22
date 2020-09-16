@@ -10,14 +10,19 @@
 						"type": "DatasetReference"
 					},
 					"name": "SRDVDSalesCustomerRawOutput"
-				},
-				{
-					"name": "SRDVDSalesCustomerAddresses"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "CustomerOutputCurated",
+						"type": "DatasetReference"
+					},
+					"name": "sink2demo"
+				}
+			],
 			"transformations": [],
-			"script": "source(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as date 'MM/dd/yyyy',\n\t\tUpdatedDate as date 'MM/dd/yyyy'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> SRDVDSalesCustomerRawOutput\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> SRDVDSalesCustomerAddresses"
+			"script": "source(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as date 'MM/dd/yyyy',\n\t\tUpdatedDate as date 'MM/dd/yyyy'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> SRDVDSalesCustomerRawOutput\nSRDVDSalesCustomerRawOutput sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2demo"
 		}
 	}
 }
