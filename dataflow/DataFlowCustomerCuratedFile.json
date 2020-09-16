@@ -1,5 +1,5 @@
 {
-	"name": "DataFlowCusomerCuratedFile",
+	"name": "DataFlowCustomerCuratedFile",
 	"properties": {
 		"description": "testing",
 		"type": "MappingDataFlow",
