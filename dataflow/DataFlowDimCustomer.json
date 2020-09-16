@@ -3,10 +3,18 @@
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
-			"sources": [],
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "RawSouthRidgeDVDSalesCustomerFlatFile",
+						"type": "DatasetReference"
+					},
+					"name": "SRDVDSalesCustomerRawOutput"
+				}
+			],
 			"sinks": [],
 			"transformations": [],
-			"script": ""
+			"script": "source(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> SRDVDSalesCustomerRawOutput"
 		}
 	}
 }
