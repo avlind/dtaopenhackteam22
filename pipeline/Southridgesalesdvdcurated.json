@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "salesdvdsalescurated",
+				"name": "SouthridgeDVDSalesCuratedPipeline",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DataFlowDVDSalesCurated",
+						"referenceName": "DataFlowDVDSalesCuratedFile",
 						"type": "DataFlowReference"
 					},
 					"compute": {
