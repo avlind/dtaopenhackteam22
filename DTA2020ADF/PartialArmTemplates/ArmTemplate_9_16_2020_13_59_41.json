@@ -1,0 +1,301 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "DTA2020ADF"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/CustomerDimCurated')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "customerdetails",
+						"fileSystem": "mdwcurated"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SRDVDSalesCustomerAddressesFlatFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dboAddresses.txt",
+						"folderPath": "SouthRidge/DVDSales",
+						"fileSystem": "mdwsourcefiles"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "AddressID",
+						"type": "String"
+					},
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "AddressLine1",
+						"type": "String"
+					},
+					{
+						"name": "AddressLine2",
+						"type": "String"
+					},
+					{
+						"name": "City",
+						"type": "String"
+					},
+					{
+						"name": "State",
+						"type": "String"
+					},
+					{
+						"name": "ZipCode",
+						"type": "String"
+					},
+					{
+						"name": "CreatedDate",
+						"type": "String"
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SRStreamingCustomerAddyFlatFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dboAddresses.txt",
+						"folderPath": "SouthRidge/StreamingSales",
+						"fileSystem": "mdwsourcefiles"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "AddressID",
+						"type": "String"
+					},
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "AddressLine1",
+						"type": "String"
+					},
+					{
+						"name": "AddressLine2",
+						"type": "String"
+					},
+					{
+						"name": "City",
+						"type": "String"
+					},
+					{
+						"name": "State",
+						"type": "String"
+					},
+					{
+						"name": "ZipCode",
+						"type": "String"
+					},
+					{
+						"name": "CreatedDate",
+						"type": "String"
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SRStreamingCustomerFlatFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dboCustomers.txt",
+						"folderPath": "SouthRidge/StreamingSales",
+						"fileSystem": "mdwsourcefiles"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "LastName",
+						"type": "String"
+					},
+					{
+						"name": "FirstName",
+						"type": "String"
+					},
+					{
+						"name": "PhoneNumber",
+						"type": "String"
+					},
+					{
+						"name": "CreatedDate",
+						"type": "String"
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataFlowDimCustomer')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "RawSouthRidgeDVDSalesCustomerFlatFile",
+								"type": "DatasetReference"
+							},
+							"name": "SRDVDSalesCustomerRawOutput"
+						},
+						{
+							"dataset": {
+								"referenceName": "SRDVDSalesCustomerAddressesFlatFile",
+								"type": "DatasetReference"
+							},
+							"name": "SRDVDSalesCustomerAddressesOutput"
+						},
+						{
+							"dataset": {
+								"referenceName": "SRStreamingCustomerFlatFile",
+								"type": "DatasetReference"
+							},
+							"name": "SRStreamingCustomerRawOutput"
+						},
+						{
+							"dataset": {
+								"referenceName": "SRStreamingCustomerAddyFlatFile",
+								"type": "DatasetReference"
+							},
+							"name": "SRStreamingCustomerAddressRawSource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "CustomerDimCurated",
+								"type": "DatasetReference"
+							},
+							"name": "WritetoCustomerDimCurated"
+						}
+					],
+					"transformations": [
+						{
+							"name": "JoinCustomertoAddy"
+						},
+						{
+							"name": "DerviceColumnsForCustomerDim"
+						},
+						{
+							"name": "JoinCustomerToAddyStreaming"
+						},
+						{
+							"name": "DerivedColumnsForStreamingCustomers"
+						},
+						{
+							"name": "UnionCustomers"
+						},
+						{
+							"name": "DVDCustomerColSelect"
+						},
+						{
+							"name": "StreamingCustomerColSelect"
+						}
+					],
+					"script": "source(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as date 'MM/dd/yyyy',\n\t\tUpdatedDate as date 'MM/dd/yyyy'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true,\n\tpartitionBy('hash', 1)) ~> SRDVDSalesCustomerRawOutput\nsource(output(\n\t\tAddressID as string,\n\t\tCustomerID as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as string,\n\t\tCreatedDate as date,\n\t\tUpdatedDate as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> SRDVDSalesCustomerAddressesOutput\nsource(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as date,\n\t\tUpdatedDate as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> SRStreamingCustomerRawOutput\nsource(output(\n\t\tAddressID as string,\n\t\tCustomerID as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as string,\n\t\tCreatedDate as date 'MM/dd/yyyy',\n\t\tUpdatedDate as date 'MM/dd/yyyy'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true,\n\tpartitionBy('hash', 1)) ~> SRStreamingCustomerAddressRawSource\nSRDVDSalesCustomerRawOutput, SRDVDSalesCustomerAddressesOutput join(SRDVDSalesCustomerRawOutput@CustomerID == SRDVDSalesCustomerAddressesOutput@CustomerID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinCustomertoAddy\nJoinCustomertoAddy derive(sourcesystemid = \"southridgedvd\",\n\t\tMasterCreateDate = greatest(SRDVDSalesCustomerAddressesOutput@CreatedDate,SRDVDSalesCustomerRawOutput@CreatedDate ),\n\t\tMasterUpdateDate = greatest(SRDVDSalesCustomerRawOutput@UpdatedDate,SRDVDSalesCustomerAddressesOutput@UpdatedDate),\n\t\tGlobalCustomerID = uuid()) ~> DerviceColumnsForCustomerDim\nSRStreamingCustomerRawOutput, SRStreamingCustomerAddressRawSource join(SRStreamingCustomerRawOutput@CustomerID == SRStreamingCustomerAddressRawSource@CustomerID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinCustomerToAddyStreaming\nJoinCustomerToAddyStreaming derive(sourcesystemid = \"southridgestreaming\",\n\t\tMasterCreateDate = greatest(SRStreamingCustomerAddressRawSource@CreatedDate, SRStreamingCustomerRawOutput@CreatedDate),\n\t\tMasterUpdateDate = greatest(SRStreamingCustomerAddressRawSource@UpdatedDate, SRStreamingCustomerRawOutput@UpdatedDate),\n\t\tGlobalCustomerID = uuid()) ~> DerivedColumnsForStreamingCustomers\nDVDCustomerColSelect, StreamingCustomerColSelect union(byName: true)~> UnionCustomers\nDerviceColumnsForCustomerDim select(mapColumn(\n\t\tCustomerID = SRDVDSalesCustomerRawOutput@CustomerID,\n\t\tLastName,\n\t\tFirstName,\n\t\tPhoneNumber,\n\t\tAddressID,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tState,\n\t\tZipCode,\n\t\tsourcesystemid,\n\t\tCreatedDate = MasterCreateDate,\n\t\tUpdatedDate = MasterUpdateDate,\n\t\tGlobalCustomerID\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> DVDCustomerColSelect\nDerivedColumnsForStreamingCustomers select(mapColumn(\n\t\tCustomerID = SRStreamingCustomerRawOutput@CustomerID,\n\t\tLastName,\n\t\tFirstName,\n\t\tPhoneNumber,\n\t\tAddressID,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tState,\n\t\tZipCode,\n\t\tsourcesystemid,\n\t\tCreatedDate = MasterCreateDate,\n\t\tUpdatedDate = MasterUpdateDate,\n\t\tGlobalCustomerID\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> StreamingCustomerColSelect\nUnionCustomers sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['CustomerDim'],\n\tmapColumn(\n\t\tCustomerID,\n\t\tLastName,\n\t\tFirstName,\n\t\tPhoneNumber,\n\t\tAddressID,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tState,\n\t\tZipCode,\n\t\tsourcesystemid,\n\t\tCreatedDate,\n\t\tUpdatedDate,\n\t\tGlobalCustomerID\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapOutputs: true) ~> WritetoCustomerDimCurated"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SRDVDSalesCustomerAddressesFlatFile')]",
+				"[concat(variables('factoryId'), '/datasets/SRStreamingCustomerFlatFile')]",
+				"[concat(variables('factoryId'), '/datasets/SRStreamingCustomerAddyFlatFile')]",
+				"[concat(variables('factoryId'), '/datasets/CustomerDimCurated')]"
+			]
+		}
+	]
+}
