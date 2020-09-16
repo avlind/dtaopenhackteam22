@@ -1,5 +1,5 @@
 {
-	"name": "CustomerToCuratedPipeline",
+	"name": "CustomerCuratedPipeline",
 	"properties": {
 		"activities": [
 			{
