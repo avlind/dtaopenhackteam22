@@ -1,6 +1,7 @@
 {
 	"name": "CloudSalesPipeline",
 	"properties": {
+		"description": "This is a pipeline description.",
 		"activities": [
 			{
 				"name": "ForEach_6hw",
