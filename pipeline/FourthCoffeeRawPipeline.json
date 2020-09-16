@@ -1,5 +1,5 @@
 {
-	"name": "FourthCoffeePipeline",
+	"name": "FourthCoffeeRawPipeline",
 	"properties": {
 		"activities": [
 			{
