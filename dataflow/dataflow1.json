@@ -6,26 +6,22 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "SouthRidgeSalesFlatFile",
+						"referenceName": "SalesOrdersRaw",
 						"type": "DatasetReference"
 					},
-					"name": "southridgerawsalesheader"
+					"name": "southridgdvdesalesorders"
 				},
 				{
 					"dataset": {
-						"referenceName": "SalesFlatFileDetails",
+						"referenceName": "southridgdvdesalesDetails",
 						"type": "DatasetReference"
 					},
-					"name": "southridgerawsalesdetail"
+					"name": "southridgdvdesalesdetails"
 				}
 			],
 			"sinks": [],
-			"transformations": [
-				{
-					"name": "salesdetailjoinorder"
-				}
-			],
-			"script": "source(output(\n\t\tColumn_1 as string,\n\t\tColumn_2 as string,\n\t\tColumn_3 as string,\n\t\tColumn_4 as string,\n\t\tColumn_5 as string,\n\t\tColumn_6 as string,\n\t\tColumn_7 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100) ~> southridgerawsalesheader\nsource(output(\n\t\tColumn_1 as string,\n\t\tColumn_2 as string,\n\t\tColumn_3 as string,\n\t\tColumn_4 as string,\n\t\tColumn_5 as string,\n\t\tColumn_6 as string,\n\t\tColumn_7 as string,\n\t\tColumn_8 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100) ~> southridgerawsalesdetail\nsouthridgerawsalesheader, southridgerawsalesdetail join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> salesdetailjoinorder"
+			"transformations": [],
+			"script": "source(output(\n\t\tOrderID as string,\n\t\tCustomerID as string,\n\t\tOrderDate as string,\n\t\tShipDate as string,\n\t\tTotalCost as string,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> southridgdvdesalesorders\nsource(output(\n\t\tOrderDetailID as string,\n\t\tOrderID as string,\n\t\tMovieID as string,\n\t\tQuantity as string,\n\t\tUnitCost as string,\n\t\tLineNumber as string,\n\t\tCreatedDate as string,\n\t\tUpdatedDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100) ~> southridgdvdesalesdetails"
 		}
 	}
 }
