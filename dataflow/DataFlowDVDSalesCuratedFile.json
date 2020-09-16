@@ -1,5 +1,5 @@
 {
-	"name": "DataFlowDVDSalesCurated",
+	"name": "DataFlowDVDSalesCuratedFile",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
