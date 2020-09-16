@@ -10,14 +10,44 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": "streaming",
-				"fileSystem": "mdwcurated"
+				"fileName": "dboTransactions.txt",
+				"folderPath": "SouthRidge/StreamingSales",
+				"fileSystem": "mdwsourcefiles"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "TransactionID",
+				"type": "String"
+			},
+			{
+				"name": "CustomerID",
+				"type": "String"
+			},
+			{
+				"name": "MovieID",
+				"type": "String"
+			},
+			{
+				"name": "StreamStart",
+				"type": "String"
+			},
+			{
+				"name": "StreamEnd",
+				"type": "String"
+			},
+			{
+				"name": "CreatedDate",
+				"type": "String"
+			},
+			{
+				"name": "UpdatedDate",
+				"type": "String"
+			}
+		]
 	}
 }
