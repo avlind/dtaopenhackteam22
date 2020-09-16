@@ -338,7 +338,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CloudStreamingPipeline')]",
+			"name": "[concat(parameters('factoryName'), '/CloudStreamingRawPipeline')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -456,7 +456,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/MovieCatalogPipeline')]",
+			"name": "[concat(parameters('factoryName'), '/MovieCatalogRawPipeline')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -621,7 +621,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DataFlowDimCustomer')]",
+			"name": "[concat(parameters('factoryName'), '/DataFlowCustomerCuratedFile')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -696,7 +696,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"name": "[concat(parameters('factoryName'), '/DataFlowDVDSalesCuratedFile')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -744,7 +744,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CloudSalesPipeline')]",
+			"name": "[concat(parameters('factoryName'), '/CloudSalesRawPipeline')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -872,7 +872,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DimCustomer')]",
+			"name": "[concat(parameters('factoryName'), '/CustomerCuratedPipeline')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -891,7 +891,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "DataFlowDimCustomer",
+								"referenceName": "DataFlowCustomerCuratedFile",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
@@ -913,11 +913,11 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/DataFlowDimCustomer')]"
+				"[concat(variables('factoryId'), '/dataflows/DataFlowCustomerCuratedFile')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/FourthCoffeePipeline')]",
+			"name": "[concat(parameters('factoryName'), '/FourthCoffeeRawPipeline')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -994,13 +994,13 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Southridgesalesdvdcurated')]",
+			"name": "[concat(parameters('factoryName'), '/SouthridgeDVDSalesCuratedPipeline')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "salesdvdsalescurated",
+						"name": "DataFlowDVDSalesCuratedFile",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -1013,7 +1013,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "dataflow1",
+								"referenceName": "DataFlowDVDSalesCuratedFile",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
@@ -1033,7 +1033,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
+				"[concat(variables('factoryId'), '/dataflows/DataFlowDVDSalesCuratedFile')]"
 			]
 		}
 	]
