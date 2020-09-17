@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "DataFlowDimCustomer",
+				"name": "DataFlowCustomerToCurated",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
