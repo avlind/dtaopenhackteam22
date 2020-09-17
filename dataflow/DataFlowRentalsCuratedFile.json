@@ -26,7 +26,8 @@
 						"referenceName": "DVDRentalTransactionsSink",
 						"type": "DatasetReference"
 					},
-					"name": "DVDRentalTransactions"
+					"name": "DVDRentalTransactions",
+					"description": "Export data to DVDRentalTransactionsSink - added header as first record"
 				}
 			],
 			"transformations": [
