@@ -350,6 +350,49 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DVDRentalsCurateFilePipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DataFlowRentalsCuratedFile",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DataFlowRentalsCuratedFile",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"FourthCoffeeSourceFiles": {},
+									"VanArsdaleSourceFiles": {},
+									"DVDRentalTransactions": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DataFlowRentalsCuratedFile')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/FourthCoffeeRawPipeline')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -744,6 +787,33 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DVDRentalTransactionsSink')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "dvdrentaldetails",
+						"fileSystem": "mdwcurated"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/datalake')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DestinationDataset_6hw')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -904,6 +974,76 @@
 					"quoteChar": "\""
 				},
 				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/datalake')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FourthCoffeeDataLakeSourceTransactions')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "Transactions.csv",
+						"folderPath": "FourthCoffee",
+						"fileSystem": "mdwsourcefiles"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "TransactionID",
+						"type": "String"
+					},
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "MovieID",
+						"type": "String"
+					},
+					{
+						"name": "RentalDate",
+						"type": "String"
+					},
+					{
+						"name": "ReturnDate",
+						"type": "String"
+					},
+					{
+						"name": "RentalCost",
+						"type": "String"
+					},
+					{
+						"name": "LateFee",
+						"type": "String"
+					},
+					{
+						"name": "RewindFlag",
+						"type": "String"
+					},
+					{
+						"name": "CreatedDate",
+						"type": "String"
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "String"
+					}
+				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/datalake')]"
@@ -1498,6 +1638,76 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/VanArsdaleADLSSourceTransactions')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dboTransactions.txt",
+						"folderPath": "VanArsdel",
+						"fileSystem": "mdwsourcefiles"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "TransactionID",
+						"type": "String"
+					},
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "MovieID",
+						"type": "String"
+					},
+					{
+						"name": "RentalDate",
+						"type": "String"
+					},
+					{
+						"name": "ReturnDate",
+						"type": "String"
+					},
+					{
+						"name": "RentalCost",
+						"type": "String"
+					},
+					{
+						"name": "LateFee",
+						"type": "String"
+					},
+					{
+						"name": "RewindFlag",
+						"type": "String"
+					},
+					{
+						"name": "CreatedDate",
+						"type": "String"
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/datalake')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/southridgdvdesalesDetails')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1898,6 +2108,62 @@
 				"[concat(variables('factoryId'), '/datasets/SalesOrdersRaw')]",
 				"[concat(variables('factoryId'), '/datasets/southridgdvdesalesDetails')]",
 				"[concat(variables('factoryId'), '/datasets/southridgedvdsalescurate')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataFlowRentalsCuratedFile')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Import data from FourthCoffeeADLSSourceTransactions",
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "FourthCoffeeDataLakeSourceTransactions",
+								"type": "DatasetReference"
+							},
+							"name": "FourthCoffeeSourceFiles"
+						},
+						{
+							"dataset": {
+								"referenceName": "VanArsdaleADLSSourceTransactions",
+								"type": "DatasetReference"
+							},
+							"name": "VanArsdaleSourceFiles"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DVDRentalTransactionsSink",
+								"type": "DatasetReference"
+							},
+							"name": "DVDRentalTransactions"
+						}
+					],
+					"transformations": [
+						{
+							"name": "FourthCoffeeDerivedColumns"
+						},
+						{
+							"name": "VanArsdaleDerivedColumns"
+						},
+						{
+							"name": "UnionFourthCoffeeAndVanArsdaleTxn"
+						},
+						{
+							"name": "VanArsdaleSelectColumns"
+						}
+					],
+					"script": "source(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tRentalDate as date 'yyyyMMdd',\n\t\tReturnDate as date 'yyyyMMdd',\n\t\tRentalCost as double,\n\t\tLateFee as double,\n\t\tRewindFlag as boolean,\n\t\tCreatedDate as date 'yyyy-MM-dd',\n\t\tUpdatedDate as date 'yyyy-MM-dd'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> FourthCoffeeSourceFiles\nsource(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tRentalDate as date 'yyyyMMdd',\n\t\tReturnDate as date 'yyyyMMdd',\n\t\tRentalCost as double,\n\t\tLateFee as double,\n\t\tRewindFlag as boolean,\n\t\tCreatedDate as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS',\n\t\tUpdatedDate as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> VanArsdaleSourceFiles\nFourthCoffeeSourceFiles derive(SourceSystemNm = \"FourthCoffee\") ~> FourthCoffeeDerivedColumns\nVanArsdaleSourceFiles derive(SourceSystemNm = \"VanArsdale\",\n\t\tCreatedDateNew = toDate(toString(CreatedDate, 'yyyy-MM-dd HH:mm:ss.SS'), 'yyyy-MM-dd'),\n\t\tUpdatedDateNew = toDate(toString(UpdatedDate, 'yyyy-MM-dd HH:mm:ss.SS'), 'yyyy-MM-dd')) ~> VanArsdaleDerivedColumns\nFourthCoffeeDerivedColumns, VanArsdaleSelectColumns union(byName: true)~> UnionFourthCoffeeAndVanArsdaleTxn\nVanArsdaleDerivedColumns select(mapColumn(\n\t\tTransactionID,\n\t\tCustomerID,\n\t\tMovieID,\n\t\tRentalDate,\n\t\tReturnDate,\n\t\tRentalCost,\n\t\tLateFee,\n\t\tRewindFlag,\n\t\tSourceSystemNm,\n\t\tCreatedDate = CreatedDateNew,\n\t\tUpdatedDate = UpdatedDateNew\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> VanArsdaleSelectColumns\nUnionFourthCoffeeAndVanArsdaleTxn sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['DVDRentalDetails'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DVDRentalTransactions"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/FourthCoffeeDataLakeSourceTransactions')]",
+				"[concat(variables('factoryId'), '/datasets/VanArsdaleADLSSourceTransactions')]",
+				"[concat(variables('factoryId'), '/datasets/DVDRentalTransactionsSink')]"
 			]
 		}
 	]
