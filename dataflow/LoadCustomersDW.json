@@ -10,15 +10,25 @@
 						"type": "DatasetReference"
 					},
 					"name": "CustomerCurated"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSynapseAnalyticsTable1",
+						"type": "DatasetReference"
+					},
+					"name": "CustomerDW"
 				}
 			],
 			"sinks": [],
 			"transformations": [
 				{
 					"name": "SelectCustomerCuratedFieldsForDW"
+				},
+				{
+					"name": "DerivedColumn1"
 				}
 			],
-			"script": "source(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as long,\n\t\tAddressID as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as integer,\n\t\tsourcesystemid as string,\n\t\tCreatedDate as timestamp,\n\t\tUpdatedDate as timestamp,\n\t\tGlobalCustomerID as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> CustomerCurated\nCustomerCurated select(mapColumn(\n\t\tCustomerID,\n\t\tLastName,\n\t\tFirstName,\n\t\tPhoneNumber,\n\t\tAddressID,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tState,\n\t\tZipCode,\n\t\tsourcesystemid,\n\t\tCreatedDate,\n\t\tUpdatedDate,\n\t\tGlobalCustomerID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCustomerCuratedFieldsForDW"
+			"script": "source(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as long,\n\t\tAddressID as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as integer,\n\t\tsourcesystemid as string,\n\t\tCreatedDate as timestamp,\n\t\tUpdatedDate as timestamp,\n\t\tGlobalCustomerID as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> CustomerCurated\nsource(output(\n\t\tCustomerSK as integer,\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as string,\n\t\tPhoneNumber as string,\n\t\tRecordStartDate as date,\n\t\tRecordEndDate as date,\n\t\tActiveFlag as boolean\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table',\n\tstaged: false) ~> CustomerDW\nCustomerCurated select(mapColumn(\n\t\tCustomerID,\n\t\tLastName,\n\t\tFirstName,\n\t\tPhoneNumber,\n\t\tAddressID,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tState,\n\t\tZipCode,\n\t\tsourcesystemid,\n\t\tCreatedDate,\n\t\tUpdatedDate,\n\t\tGlobalCustomerID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCustomerCuratedFieldsForDW\nSelectCustomerCuratedFieldsForDW derive(CustomerID = CustomerID,\n\t\tcolumn1 = ERROR_FUNCTION('')) ~> DerivedColumn1"
 		}
 	}
 }

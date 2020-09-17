@@ -1,0 +1,70 @@
+{
+	"name": "AzureSynapseAnalyticsTable1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MDWOH_Team22_SQLDW",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "CustomerSK",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CustomerID",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "LastName",
+				"type": "varchar"
+			},
+			{
+				"name": "FirstName",
+				"type": "varchar"
+			},
+			{
+				"name": "AddressLine1",
+				"type": "varchar"
+			},
+			{
+				"name": "AddressLine2",
+				"type": "varchar"
+			},
+			{
+				"name": "City",
+				"type": "varchar"
+			},
+			{
+				"name": "State",
+				"type": "char"
+			},
+			{
+				"name": "ZipCode",
+				"type": "char"
+			},
+			{
+				"name": "PhoneNumber",
+				"type": "char"
+			},
+			{
+				"name": "RecordStartDate",
+				"type": "date"
+			},
+			{
+				"name": "RecordEndDate",
+				"type": "date"
+			},
+			{
+				"name": "ActiveFlag",
+				"type": "bit"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "DimCustomers"
+		}
+	}
+}
