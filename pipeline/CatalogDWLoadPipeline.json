@@ -1,0 +1,7 @@
+{
+	"name": "CatalogDWLoadPipeline",
+	"properties": {
+		"description": "Load genres/catalog",
+		"annotations": []
+	}
+}
