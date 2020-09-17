@@ -13,8 +13,12 @@
 				}
 			],
 			"sinks": [],
-			"transformations": [],
-			"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> DimCatalogGenre"
+			"transformations": [
+				{
+					"name": "Aggregate1"
+				}
+			],
+			"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> DimCatalogGenre\nDimCatalogGenre aggregate() ~> Aggregate1"
 		}
 	}
 }
