@@ -18,7 +18,7 @@
 						"referenceName": "DLT",
 						"type": "DatasetReference"
 					},
-					"name": "CuratedStreaming"
+					"name": "DimStreaming"
 				}
 			],
 			"transformations": [
@@ -26,7 +26,7 @@
 					"name": "SourceDC"
 				}
 			],
-			"script": "source(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tStreamStart as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS',\n\t\tStreamEnd as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS',\n\t\tCreatedDate as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS',\n\t\tUpdatedDate as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100,\n\tpartitionBy('hash', 1)) ~> FStoCuratedSource\nFStoCuratedSource derive(SourceSystemID = \"SouthRidge\",\n\t\tGlobalTransactionID = uuid()) ~> SourceDC\nSourceDC sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['CuratedStreaming.csv'],\n\tmapColumn(\n\t\tTransactionID,\n\t\tCustomerID,\n\t\tMovieID,\n\t\tStreamStart,\n\t\tStreamEnd,\n\t\tCreatedDate,\n\t\tUpdatedDate\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> CuratedStreaming"
+			"script": "source(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tStreamStart as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS',\n\t\tStreamEnd as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS',\n\t\tCreatedDate as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS',\n\t\tUpdatedDate as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100,\n\tpartitionBy('hash', 1)) ~> FStoCuratedSource\nFStoCuratedSource derive(SourceSystemID = \"southridgedvd\",\n\t\tGlobalTransactionID = uuid(),\n\tpartitionBy('hash', 1)) ~> SourceDC\nSourceDC sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['DimStreaming'],\n\tmapColumn(\n\t\tTransactionID,\n\t\tCustomerID,\n\t\tMovieID,\n\t\tStreamStart,\n\t\tStreamEnd,\n\t\tCreatedDate,\n\t\tUpdatedDate,\n\t\tSourceSystemID,\n\t\tGlobalTransactionID\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DimStreaming"
 		}
 	}
 }
