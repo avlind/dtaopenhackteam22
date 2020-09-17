@@ -1,0 +1,35 @@
+{
+	"name": "LoadRatingsDW",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "MovieCatalogCuratedFile",
+						"type": "DatasetReference"
+					},
+					"name": "CuratedMovies"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "MDWOH_Team22_Ratings",
+						"type": "DatasetReference"
+					},
+					"name": "LoadMovieRatingsTableDW"
+				}
+			],
+			"transformations": [
+				{
+					"name": "ExtractMovieRatings"
+				},
+				{
+					"name": "GroupMovieRatings"
+				}
+			],
+			"script": "source(output(\n\t\tActorName as string,\n\t\tPhysicalAvailabilityDate as timestamp,\n\t\tGenre as string,\n\t\tRating as string,\n\t\tTheatricalReleaseYear as short,\n\t\tRuntimeMinutes as short,\n\t\tStreamingAvailabilityDate as timestamp,\n\t\tTitle as string,\n\t\tSourceSystemMovieID as string,\n\t\tSouthridgeMovieID as string,\n\t\tSourceSystemID as string,\n\t\tGlobalMovieID as string,\n\t\tActorID as string,\n\t\tGender as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> CuratedMovies\nCuratedMovies select(mapColumn(\n\t\tRating\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ExtractMovieRatings\nExtractMovieRatings aggregate(groupBy(Rating),\n\tCountMovieRatings = count(1)) ~> GroupMovieRatings\nGroupMovieRatings sink(input(\n\t\tMovieRatingSK as integer,\n\t\tMovieRatingDescription as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tstaged: true,\n\tmapColumn(\n\t\tMovieRatingDescription = Rating\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> LoadMovieRatingsTableDW"
+		}
+	}
+}

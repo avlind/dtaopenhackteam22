@@ -1,0 +1,26 @@
+{
+	"name": "MDWOH_Team22_Ratings",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MDWOH_Team22_SQLDW",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "MovieRatingSK",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "MovieRatingDescription",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "DimRatings"
+		}
+	}
+}
