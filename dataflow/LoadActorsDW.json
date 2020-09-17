@@ -1,0 +1,24 @@
+{
+	"name": "LoadActorsDW",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "MovieCatalogCuratedFile",
+						"type": "DatasetReference"
+					},
+					"name": "CatalogCuratedOutput"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "SelectActorAttributes"
+				}
+			],
+			"script": "source(output(\n\t\tActorName as string,\n\t\tPhysicalAvailabilityDate as timestamp,\n\t\tGenre as string,\n\t\tRating as string,\n\t\tTheatricalReleaseYear as short,\n\t\tRuntimeMinutes as short,\n\t\tStreamingAvailabilityDate as timestamp,\n\t\tTitle as string,\n\t\tSourceSystemMovieID as string,\n\t\tSouthridgeMovieID as string,\n\t\tSourceSystemID as string,\n\t\tGlobalMovieID as string,\n\t\tActorID as string,\n\t\tGender as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> CatalogCuratedOutput\nCatalogCuratedOutput select(mapColumn(\n\t\tActorName,\n\t\tSourceSystemID,\n\t\tActorID,\n\t\tGender\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectActorAttributes"
+		}
+	}
+}
