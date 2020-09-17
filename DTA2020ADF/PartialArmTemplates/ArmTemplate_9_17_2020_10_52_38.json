@@ -1,0 +1,752 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "DTA2020ADF"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/CatalogCuratedPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DataFlowCatalogCuratedFile",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DataFlowCatalogCuratedFile",
+								"type": "DataFlowReference"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DataFlowCatalogCuratedFile')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MovieCatalogCuratedPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DataFlowCatalogCuratedFile",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DataFlowCatalogCuratedFile",
+								"type": "DataFlowReference"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DataFlowCatalogCuratedFile')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DVDRentalTransactionsSink')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "dvdrentaldetails",
+						"fileSystem": "mdwcurated"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FourthCoffeeActorsRawFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "Actors.csv",
+						"folderPath": "FourthCoffee",
+						"fileSystem": "mdwsourcefiles"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ActorID",
+						"type": "String"
+					},
+					{
+						"name": "ActorName",
+						"type": "String"
+					},
+					{
+						"name": "Gender",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FourthCoffeeMovieActorRawFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "MovieActors.csv",
+						"folderPath": "FourthCoffee",
+						"fileSystem": "mdwsourcefiles"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "MovieActorID",
+						"type": "String"
+					},
+					{
+						"name": "MovieID",
+						"type": "String"
+					},
+					{
+						"name": "ActorID",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FouthCoffeeMovieOnlineMovieRawFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "OnlineMovieMappings.csv",
+						"folderPath": "FourthCoffee",
+						"fileSystem": "mdwsourcefiles"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "MovieID",
+						"type": "String"
+					},
+					{
+						"name": "OnlineMovieID",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FouthCoffeeMovieRawFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "Movies.csv",
+						"folderPath": "FourthCoffee",
+						"fileSystem": "mdwsourcefiles"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "MovieID",
+						"type": "String"
+					},
+					{
+						"name": "MovieTitle",
+						"type": "String"
+					},
+					{
+						"name": "Category",
+						"type": "String"
+					},
+					{
+						"name": "Rating",
+						"type": "String"
+					},
+					{
+						"name": "RunTimeMin",
+						"type": "String"
+					},
+					{
+						"name": "ReleaseDate",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MovieCatalogCuratedFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "moviedetails",
+						"fileSystem": "mdwcurated"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SouthridgeCatalogRawJSONFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "data_dc3e4f6e-825b-4554-b20a-6daa8b6c7220_f2c89301-b967-4dfc-af05-96778bccce32.json",
+						"folderPath": "SouthRidge/MovieCatalog",
+						"fileSystem": "mdwsourcefiles"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"actors": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									}
+								}
+							}
+						},
+						"availabilityDate": {
+							"type": "string"
+						},
+						"genre": {
+							"type": "string"
+						},
+						"rating": {
+							"type": "string"
+						},
+						"releaseYear": {
+							"type": "integer"
+						},
+						"runtime": {
+							"type": "integer"
+						},
+						"streamingAvailabilityDate": {
+							"type": "string"
+						},
+						"tier": {
+							"type": "integer"
+						},
+						"title": {
+							"type": "string"
+						},
+						"id": {
+							"type": "string"
+						},
+						"_rid": {
+							"type": "string"
+						},
+						"_self": {
+							"type": "string"
+						},
+						"_etag": {
+							"type": "string"
+						},
+						"_attachments": {
+							"type": "string"
+						},
+						"_ts": {
+							"type": "integer"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/VanArsdaleMoviesRawFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dboMovies.txt",
+						"folderPath": "VanArsdel",
+						"fileSystem": "mdwsourcefiles"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "MovieID",
+						"type": "String"
+					},
+					{
+						"name": "MovieTitle",
+						"type": "String"
+					},
+					{
+						"name": "Category",
+						"type": "String"
+					},
+					{
+						"name": "Rating",
+						"type": "String"
+					},
+					{
+						"name": "RunTimeMin",
+						"type": "String"
+					},
+					{
+						"name": "ReleaseDate",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/VanArsdelActorMovieRawFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dboMovieActors.txt",
+						"folderPath": "VanArsdel",
+						"fileSystem": "mdwsourcefiles"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "MovieActorID",
+						"type": "String"
+					},
+					{
+						"name": "MovieID",
+						"type": "String"
+					},
+					{
+						"name": "ActorID",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/VanArsdelActorsRawFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dboActors.txt",
+						"folderPath": "VanArsdel",
+						"fileSystem": "mdwsourcefiles"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ActorID",
+						"type": "String"
+					},
+					{
+						"name": "ActorName",
+						"type": "String"
+					},
+					{
+						"name": "Gender",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/VanArsdelOnlineMoviesRawFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dboOnlineMovieMappings.txt",
+						"folderPath": "VanArsdel",
+						"fileSystem": "mdwsourcefiles"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "MovieID",
+						"type": "String"
+					},
+					{
+						"name": "OnlineMovieID",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataFlowCatalogCuratedFile')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SouthridgeCatalogRawJSONFile",
+								"type": "DatasetReference"
+							},
+							"name": "SouthridgeCatalogRawOutput"
+						},
+						{
+							"dataset": {
+								"referenceName": "FouthCoffeeMovieRawFile",
+								"type": "DatasetReference"
+							},
+							"name": "FouthCoffeeMoviesRaw"
+						},
+						{
+							"dataset": {
+								"referenceName": "FourthCoffeeActorsRawFile",
+								"type": "DatasetReference"
+							},
+							"name": "FourthCoffeeActorsRaw"
+						},
+						{
+							"dataset": {
+								"referenceName": "FourthCoffeeMovieActorRawFile",
+								"type": "DatasetReference"
+							},
+							"name": "FourthCoffeeMovieActor"
+						},
+						{
+							"dataset": {
+								"referenceName": "FouthCoffeeMovieOnlineMovieRawFile",
+								"type": "DatasetReference"
+							},
+							"name": "FourthCoffeeMovieOnlineMovieRaw"
+						},
+						{
+							"dataset": {
+								"referenceName": "VanArsdaleMoviesRawFile",
+								"type": "DatasetReference"
+							},
+							"name": "VanArsdelMovieRawOutput"
+						},
+						{
+							"dataset": {
+								"referenceName": "VanArsdelActorsRawFile",
+								"type": "DatasetReference"
+							},
+							"name": "VanArsdelActorsRawOutput"
+						},
+						{
+							"dataset": {
+								"referenceName": "VanArsdelOnlineMoviesRawFile",
+								"type": "DatasetReference"
+							},
+							"name": "VanArsdelOnlineMoviesRawOutput"
+						},
+						{
+							"dataset": {
+								"referenceName": "VanArsdelActorMovieRawFile",
+								"type": "DatasetReference"
+							},
+							"name": "VanArsdelMovieActorsRawOutput"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "MovieCatalogCuratedFile",
+								"type": "DatasetReference"
+							},
+							"name": "CatalogCuratedSink"
+						}
+					],
+					"transformations": [
+						{
+							"name": "FlattenForMultipleActors"
+						},
+						{
+							"name": "SouthridgeSelectNeededCols"
+						},
+						{
+							"name": "SouthridgeCatalogDervivedCols"
+						},
+						{
+							"name": "JoinMovieActorToMovie"
+						},
+						{
+							"name": "JoinMovieActorandMovietoActor"
+						},
+						{
+							"name": "JoinInOnlineMovieID"
+						},
+						{
+							"name": "FourthCoffeeDervivedCols"
+						},
+						{
+							"name": "VanArsdelMovieActorToActor"
+						},
+						{
+							"name": "VanArsdelJointoMovie"
+						},
+						{
+							"name": "VanArsdelJointoOnlineMovie"
+						},
+						{
+							"name": "VanArsdelDerivedCols"
+						},
+						{
+							"name": "FourthCoffeeSelectNeededCols"
+						},
+						{
+							"name": "VanArsdelSelectNeededCols"
+						},
+						{
+							"name": "UnionAll"
+						}
+					],
+					"script": "source(output(\n\t\t{_attachments} as string,\n\t\t{_etag} as string,\n\t\t{_rid} as string,\n\t\t{_self} as string,\n\t\t{_ts} as integer,\n\t\tactors as (name as string)[],\n\t\tavailabilityDate as timestamp,\n\t\tgenre as string,\n\t\tid as string,\n\t\trating as string,\n\t\treleaseYear as short,\n\t\truntime as short,\n\t\tstreamingAvailabilityDate as timestamp,\n\t\ttier as short,\n\t\ttitle as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true,\n\tpartitionBy('hash', 1)) ~> SouthridgeCatalogRawOutput\nsource(output(\n\t\tMovieID as string,\n\t\tMovieTitle as string,\n\t\tCategory as string,\n\t\tRating as string,\n\t\tRunTimeMin as integer,\n\t\tReleaseDate as timestamp 'MM-dd-yyyy'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> FouthCoffeeMoviesRaw\nsource(output(\n\t\tActorID as string,\n\t\tActorName as string,\n\t\tGender as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> FourthCoffeeActorsRaw\nsource(output(\n\t\tMovieActorID as string,\n\t\tMovieID as string,\n\t\tActorID as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> FourthCoffeeMovieActor\nsource(output(\n\t\tMovieID as string,\n\t\tOnlineMovieID as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> FourthCoffeeMovieOnlineMovieRaw\nsource(output(\n\t\tMovieID as string,\n\t\tMovieTitle as string,\n\t\tCategory as string,\n\t\tRating as string,\n\t\tRunTimeMin as integer,\n\t\tReleaseDate as timestamp 'MM-dd-yyyy'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> VanArsdelMovieRawOutput\nsource(output(\n\t\tActorID as string,\n\t\tActorName as string,\n\t\tGender as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> VanArsdelActorsRawOutput\nsource(output(\n\t\tMovieID as string,\n\t\tOnlineMovieID as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> VanArsdelOnlineMoviesRawOutput\nsource(output(\n\t\tMovieActorID as string,\n\t\tMovieID as string,\n\t\tActorID as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> VanArsdelMovieActorsRawOutput\nSouthridgeCatalogRawOutput foldDown(unroll(actors),\n\tmapColumn(\n\t\tActorName = actors.name,\n\t\tavailabilityDate,\n\t\tgenre,\n\t\trating,\n\t\treleaseYear,\n\t\truntime,\n\t\tstreamingAvailabilityDate,\n\t\ttier,\n\t\ttitle,\n\t\tid,\n\t\t{_rid},\n\t\t{_self},\n\t\t{_etag},\n\t\t{_attachments},\n\t\t{_ts}\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> FlattenForMultipleActors\nSouthridgeCatalogDervivedCols select(mapColumn(\n\t\tActorName,\n\t\tPhysicalAvailabilityDate = availabilityDate,\n\t\tGenre = genre,\n\t\tRating = rating,\n\t\tTheatricalReleaseYear = releaseYear,\n\t\tRuntimeMinutes,\n\t\tStreamingAvailabilityDate = streamingAvailabilityDate,\n\t\tTitle = title,\n\t\tSourceSystemMovieID = id,\n\t\tSouthridgeMovieID = id,\n\t\tSourceSystemID,\n\t\tGlobalMovieID\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> SouthridgeSelectNeededCols\nFlattenForMultipleActors derive(RuntimeMinutes = toInteger(runtime),\n\t\tGlobalMovieID = uuid(),\n\t\tSourceSystemID = \"southridge\") ~> SouthridgeCatalogDervivedCols\nFourthCoffeeMovieActor, FouthCoffeeMoviesRaw join(FourthCoffeeMovieActor@MovieID == FouthCoffeeMoviesRaw@MovieID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinMovieActorToMovie\nJoinMovieActorToMovie, FourthCoffeeActorsRaw join(FourthCoffeeMovieActor@ActorID == FourthCoffeeActorsRaw@ActorID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinMovieActorandMovietoActor\nJoinMovieActorandMovietoActor, FourthCoffeeMovieOnlineMovieRaw join(FouthCoffeeMoviesRaw@MovieID == FourthCoffeeMovieOnlineMovieRaw@MovieID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinInOnlineMovieID\nJoinInOnlineMovieID derive(SourceSystemID = \"fourthcoffee\",\n\t\tGlobalMovieID = uuid()) ~> FourthCoffeeDervivedCols\nVanArsdelMovieActorsRawOutput, VanArsdelActorsRawOutput join(VanArsdelMovieActorsRawOutput@ActorID == VanArsdelActorsRawOutput@ActorID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> VanArsdelMovieActorToActor\nVanArsdelMovieActorToActor, VanArsdelMovieRawOutput join(VanArsdelMovieActorsRawOutput@MovieID == VanArsdelMovieRawOutput@MovieID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> VanArsdelJointoMovie\nVanArsdelJointoMovie, VanArsdelOnlineMoviesRawOutput join(VanArsdelMovieActorsRawOutput@MovieID == VanArsdelOnlineMoviesRawOutput@MovieID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> VanArsdelJointoOnlineMovie\nVanArsdelJointoOnlineMovie derive(SourceSystemID = \"vanarsdel\",\n\t\tGlobalMovieID = uuid()) ~> VanArsdelDerivedCols\nFourthCoffeeDervivedCols select(mapColumn(\n\t\tSourceSystemMovieID = FourthCoffeeMovieActor@MovieID,\n\t\tActorID = FourthCoffeeMovieActor@ActorID,\n\t\tTitle = MovieTitle,\n\t\tGenre = Category,\n\t\tRating,\n\t\tRuntimeMinutes = RunTimeMin,\n\t\tPhysicalAvailabilityDate = ReleaseDate,\n\t\tActorName,\n\t\tGender,\n\t\tSouthridgeMovieID = OnlineMovieID,\n\t\tSourceSystemID,\n\t\tGlobalMovieID\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> FourthCoffeeSelectNeededCols\nVanArsdelDerivedCols select(mapColumn(\n\t\tSourceSystemMovieID = VanArsdelMovieActorsRawOutput@MovieID,\n\t\tActorID = VanArsdelMovieActorsRawOutput@ActorID,\n\t\tActorName,\n\t\tGender,\n\t\tTitle = MovieTitle,\n\t\tGenre = Category,\n\t\tRating,\n\t\tRuntimeMinutes = RunTimeMin,\n\t\tPhysicalAvailabilityDate = ReleaseDate,\n\t\tSouthridgeMovieID = OnlineMovieID,\n\t\tSourceSystemID,\n\t\tGlobalMovieID\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> VanArsdelSelectNeededCols\nSouthridgeSelectNeededCols, FourthCoffeeSelectNeededCols, VanArsdelSelectNeededCols union(byName: true)~> UnionAll\nUnionAll sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['MovieCatalog.csv'],\n\tmapColumn(\n\t\tActorName,\n\t\tPhysicalAvailabilityDate,\n\t\tGenre,\n\t\tRating,\n\t\tTheatricalReleaseYear,\n\t\tRuntimeMinutes,\n\t\tStreamingAvailabilityDate,\n\t\tTitle,\n\t\tSourceSystemMovieID,\n\t\tSouthridgeMovieID,\n\t\tSourceSystemID,\n\t\tGlobalMovieID,\n\t\tActorID,\n\t\tGender\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> CatalogCuratedSink"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SouthridgeCatalogRawJSONFile')]",
+				"[concat(variables('factoryId'), '/datasets/FouthCoffeeMovieRawFile')]",
+				"[concat(variables('factoryId'), '/datasets/FourthCoffeeActorsRawFile')]",
+				"[concat(variables('factoryId'), '/datasets/FourthCoffeeMovieActorRawFile')]",
+				"[concat(variables('factoryId'), '/datasets/FouthCoffeeMovieOnlineMovieRawFile')]",
+				"[concat(variables('factoryId'), '/datasets/VanArsdaleMoviesRawFile')]",
+				"[concat(variables('factoryId'), '/datasets/VanArsdelActorsRawFile')]",
+				"[concat(variables('factoryId'), '/datasets/VanArsdelOnlineMoviesRawFile')]",
+				"[concat(variables('factoryId'), '/datasets/VanArsdelActorMovieRawFile')]",
+				"[concat(variables('factoryId'), '/datasets/MovieCatalogCuratedFile')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataFlowRentalsCuratedFile')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Import data from FourthCoffeeADLSSourceTransactions",
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "FourthCoffeeDataLakeSourceTransactions",
+								"type": "DatasetReference"
+							},
+							"name": "FourthCoffeeSourceFiles"
+						},
+						{
+							"dataset": {
+								"referenceName": "VanArsdaleADLSSourceTransactions",
+								"type": "DatasetReference"
+							},
+							"name": "VanArsdaleSourceFiles"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DVDRentalTransactionsSink",
+								"type": "DatasetReference"
+							},
+							"name": "DVDRentalTransactions",
+							"description": "Export data to DVDRentalTransactionsSink - added header as first record"
+						}
+					],
+					"transformations": [
+						{
+							"name": "FourthCoffeeDerivedColumns"
+						},
+						{
+							"name": "VanArsdaleDerivedColumns"
+						},
+						{
+							"name": "UnionFourthCoffeeAndVanArsdaleTxn"
+						},
+						{
+							"name": "VanArsdaleSelectColumns"
+						}
+					],
+					"script": "source(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tRentalDate as date 'yyyyMMdd',\n\t\tReturnDate as date 'yyyyMMdd',\n\t\tRentalCost as double,\n\t\tLateFee as double,\n\t\tRewindFlag as boolean,\n\t\tCreatedDate as date 'yyyy-MM-dd',\n\t\tUpdatedDate as date 'yyyy-MM-dd'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> FourthCoffeeSourceFiles\nsource(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tRentalDate as date 'yyyyMMdd',\n\t\tReturnDate as date 'yyyyMMdd',\n\t\tRentalCost as double,\n\t\tLateFee as double,\n\t\tRewindFlag as boolean,\n\t\tCreatedDate as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS',\n\t\tUpdatedDate as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> VanArsdaleSourceFiles\nFourthCoffeeSourceFiles derive(SourceSystemNm = \"FourthCoffee\") ~> FourthCoffeeDerivedColumns\nVanArsdaleSourceFiles derive(SourceSystemNm = \"VanArsdale\",\n\t\tCreatedDateNew = toDate(toString(CreatedDate, 'yyyy-MM-dd HH:mm:ss.SS'), 'yyyy-MM-dd'),\n\t\tUpdatedDateNew = toDate(toString(UpdatedDate, 'yyyy-MM-dd HH:mm:ss.SS'), 'yyyy-MM-dd')) ~> VanArsdaleDerivedColumns\nFourthCoffeeDerivedColumns, VanArsdaleSelectColumns union(byName: true)~> UnionFourthCoffeeAndVanArsdaleTxn\nVanArsdaleDerivedColumns select(mapColumn(\n\t\tTransactionID,\n\t\tCustomerID,\n\t\tMovieID,\n\t\tRentalDate,\n\t\tReturnDate,\n\t\tRentalCost,\n\t\tLateFee,\n\t\tRewindFlag,\n\t\tSourceSystemNm,\n\t\tCreatedDate = CreatedDateNew,\n\t\tUpdatedDate = UpdatedDateNew\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> VanArsdaleSelectColumns\nUnionFourthCoffeeAndVanArsdaleTxn sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['DVDRentalDetails'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DVDRentalTransactions"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DVDRentalTransactionsSink')]"
+			]
+		}
+	]
+}

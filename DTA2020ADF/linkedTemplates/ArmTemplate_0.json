@@ -198,6 +198,7 @@
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",
+					"firstRowAsHeader": true,
 					"quoteChar": "\""
 				},
 				"schema": []
@@ -373,6 +374,48 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/FourthCoffeeActorsRawFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "Actors.csv",
+						"folderPath": "FourthCoffee",
+						"fileSystem": "mdwsourcefiles"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ActorID",
+						"type": "String"
+					},
+					{
+						"name": "ActorName",
+						"type": "String"
+					},
+					{
+						"name": "Gender",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/datalake')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/FourthCoffeeDataLakeSourceTransactions')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -443,7 +486,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/RawSouthRidgeDVDSalesCustomerFlatFile')]",
+			"name": "[concat(parameters('factoryName'), '/FourthCoffeeMovieActorRawFile')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -456,8 +499,8 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "dboCustomers.txt",
-						"folderPath": "SouthRidge/DVDSales",
+						"fileName": "MovieActors.csv",
+						"folderPath": "FourthCoffee",
 						"fileSystem": "mdwsourcefiles"
 					},
 					"columnDelimiter": ",",
@@ -467,27 +510,15 @@
 				},
 				"schema": [
 					{
-						"name": "CustomerID",
+						"name": "MovieActorID",
 						"type": "String"
 					},
 					{
-						"name": "LastName",
+						"name": "MovieID",
 						"type": "String"
 					},
 					{
-						"name": "FirstName",
-						"type": "String"
-					},
-					{
-						"name": "PhoneNumber",
-						"type": "String"
-					},
-					{
-						"name": "CreatedDate",
-						"type": "String"
-					},
-					{
-						"name": "UpdatedDate",
+						"name": "ActorID",
 						"type": "String"
 					}
 				]
@@ -497,7 +528,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SRDVDSalesCustomerAddressesFlatFile')]",
+			"name": "[concat(parameters('factoryName'), '/FouthCoffeeMovieOnlineMovieRawFile')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -510,8 +541,8 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "dboAddresses.txt",
-						"folderPath": "SouthRidge/DVDSales",
+						"fileName": "OnlineMovieMappings.csv",
+						"folderPath": "FourthCoffee",
 						"fileSystem": "mdwsourcefiles"
 					},
 					"columnDelimiter": ",",
@@ -521,39 +552,11 @@
 				},
 				"schema": [
 					{
-						"name": "AddressID",
+						"name": "MovieID",
 						"type": "String"
 					},
 					{
-						"name": "CustomerID",
-						"type": "String"
-					},
-					{
-						"name": "AddressLine1",
-						"type": "String"
-					},
-					{
-						"name": "AddressLine2",
-						"type": "String"
-					},
-					{
-						"name": "City",
-						"type": "String"
-					},
-					{
-						"name": "State",
-						"type": "String"
-					},
-					{
-						"name": "ZipCode",
-						"type": "String"
-					},
-					{
-						"name": "CreatedDate",
-						"type": "String"
-					},
-					{
-						"name": "UpdatedDate",
+						"name": "OnlineMovieID",
 						"type": "String"
 					}
 				]
@@ -563,7 +566,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SRStreamingCustomerAddyFlatFile')]",
+			"name": "[concat(parameters('factoryName'), '/FouthCoffeeMovieRawFile')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -576,8 +579,8 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "dboAddresses.txt",
-						"folderPath": "SouthRidge/StreamingSales",
+						"fileName": "Movies.csv",
+						"folderPath": "FourthCoffee",
 						"fileSystem": "mdwsourcefiles"
 					},
 					"columnDelimiter": ",",
@@ -587,93 +590,27 @@
 				},
 				"schema": [
 					{
-						"name": "AddressID",
+						"name": "MovieID",
 						"type": "String"
 					},
 					{
-						"name": "CustomerID",
+						"name": "MovieTitle",
 						"type": "String"
 					},
 					{
-						"name": "AddressLine1",
+						"name": "Category",
 						"type": "String"
 					},
 					{
-						"name": "AddressLine2",
+						"name": "Rating",
 						"type": "String"
 					},
 					{
-						"name": "City",
+						"name": "RunTimeMin",
 						"type": "String"
 					},
 					{
-						"name": "State",
-						"type": "String"
-					},
-					{
-						"name": "ZipCode",
-						"type": "String"
-					},
-					{
-						"name": "CreatedDate",
-						"type": "String"
-					},
-					{
-						"name": "UpdatedDate",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/datalake')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SRStreamingCustomerFlatFile')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "datalake",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "dboCustomers.txt",
-						"folderPath": "SouthRidge/StreamingSales",
-						"fileSystem": "mdwsourcefiles"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "CustomerID",
-						"type": "String"
-					},
-					{
-						"name": "LastName",
-						"type": "String"
-					},
-					{
-						"name": "FirstName",
-						"type": "String"
-					},
-					{
-						"name": "PhoneNumber",
-						"type": "String"
-					},
-					{
-						"name": "CreatedDate",
-						"type": "String"
-					},
-					{
-						"name": "UpdatedDate",
+						"name": "ReleaseDate",
 						"type": "String"
 					}
 				]

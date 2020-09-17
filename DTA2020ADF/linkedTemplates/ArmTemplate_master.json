@@ -116,18 +116,6 @@
 					},
 					"CloudSalesDB_connectionString": {
 						"value": "[parameters('CloudSalesDB_connectionString')]"
-					},
-					"FourthCoffeeVM_password": {
-						"value": "[parameters('FourthCoffeeVM_password')]"
-					},
-					"VanArsdaleOnPremSQLSource_connectionString": {
-						"value": "[parameters('VanArsdaleOnPremSQLSource_connectionString')]"
-					},
-					"FourthCoffeeVM_properties_typeProperties_host": {
-						"value": "[parameters('FourthCoffeeVM_properties_typeProperties_host')]"
-					},
-					"FourthCoffeeVM_properties_typeProperties_userId": {
-						"value": "[parameters('FourthCoffeeVM_properties_typeProperties_userId')]"
 					}
 				}
 			},
@@ -148,6 +136,18 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"FourthCoffeeVM_password": {
+						"value": "[parameters('FourthCoffeeVM_password')]"
+					},
+					"VanArsdaleOnPremSQLSource_connectionString": {
+						"value": "[parameters('VanArsdaleOnPremSQLSource_connectionString')]"
+					},
+					"FourthCoffeeVM_properties_typeProperties_host": {
+						"value": "[parameters('FourthCoffeeVM_properties_typeProperties_host')]"
+					},
+					"FourthCoffeeVM_properties_typeProperties_userId": {
+						"value": "[parameters('FourthCoffeeVM_properties_typeProperties_userId')]"
 					}
 				}
 			},
