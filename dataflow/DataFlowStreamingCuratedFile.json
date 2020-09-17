@@ -1,5 +1,5 @@
 {
-	"name": "CloudStreamingCuratedPipeline",
+	"name": "DataFlowStreamingCuratedFile",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
