@@ -382,6 +382,8 @@
 									"SRDVDSalesCustomerAddressesOutput": {},
 									"SRStreamingCustomerRawOutput": {},
 									"SRStreamingCustomerAddressRawSource": {},
+									"FourthCoffeeCustomer": {},
+									"VanArsdaleCustomer": {},
 									"WritetoCustomerDimCurated": {}
 								}
 							},
@@ -1114,6 +1116,80 @@
 					},
 					{
 						"name": "Gender",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/datalake')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FourthCoffeeCustomerRaw')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "Customers.csv",
+						"folderPath": "FourthCoffee",
+						"fileSystem": "mdwsourcefiles"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "LastName",
+						"type": "String"
+					},
+					{
+						"name": "FirstName",
+						"type": "String"
+					},
+					{
+						"name": "AddressLine1",
+						"type": "String"
+					},
+					{
+						"name": "AddressLine2",
+						"type": "String"
+					},
+					{
+						"name": "City",
+						"type": "String"
+					},
+					{
+						"name": "State",
+						"type": "String"
+					},
+					{
+						"name": "ZipCode",
+						"type": "String"
+					},
+					{
+						"name": "PhoneNumber",
+						"type": "String"
+					},
+					{
+						"name": "CreatedDate",
+						"type": "String"
+					},
+					{
+						"name": "UpdatedDate",
 						"type": "String"
 					}
 				]
@@ -2149,6 +2225,80 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/VanArsdaleRaw')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "dboCustomers.txt",
+						"folderPath": "VanArsdel",
+						"fileSystem": "mdwsourcefiles"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "LastName",
+						"type": "String"
+					},
+					{
+						"name": "FirstName",
+						"type": "String"
+					},
+					{
+						"name": "AddressLine1",
+						"type": "String"
+					},
+					{
+						"name": "AddressLine2",
+						"type": "String"
+					},
+					{
+						"name": "City",
+						"type": "String"
+					},
+					{
+						"name": "State",
+						"type": "String"
+					},
+					{
+						"name": "ZipCode",
+						"type": "String"
+					},
+					{
+						"name": "PhoneNumber",
+						"type": "String"
+					},
+					{
+						"name": "CreatedDate",
+						"type": "String"
+					},
+					{
+						"name": "UpdatedDate",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/datalake')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/VanArsdelActorMovieRawFile')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2720,6 +2870,20 @@
 								"type": "DatasetReference"
 							},
 							"name": "SRStreamingCustomerAddressRawSource"
+						},
+						{
+							"dataset": {
+								"referenceName": "FourthCoffeeCustomerRaw",
+								"type": "DatasetReference"
+							},
+							"name": "FourthCoffeeCustomer"
+						},
+						{
+							"dataset": {
+								"referenceName": "VanArsdaleRaw",
+								"type": "DatasetReference"
+							},
+							"name": "VanArsdaleCustomer"
 						}
 					],
 					"sinks": [
@@ -2752,9 +2916,18 @@
 						},
 						{
 							"name": "StreamingCustomerColSelect"
+						},
+						{
+							"name": "DerivedColumnFourthCoffee"
+						},
+						{
+							"name": "DerivedColumnVanArsdale"
+						},
+						{
+							"name": "FourthCoffeeSelect"
 						}
 					],
-					"script": "source(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as date 'MM/dd/yyyy',\n\t\tUpdatedDate as date 'MM/dd/yyyy'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true,\n\tpartitionBy('hash', 1)) ~> SRDVDSalesCustomerRawOutput\nsource(output(\n\t\tAddressID as string,\n\t\tCustomerID as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as string,\n\t\tCreatedDate as date,\n\t\tUpdatedDate as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> SRDVDSalesCustomerAddressesOutput\nsource(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as date,\n\t\tUpdatedDate as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> SRStreamingCustomerRawOutput\nsource(output(\n\t\tAddressID as string,\n\t\tCustomerID as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as string,\n\t\tCreatedDate as date 'MM/dd/yyyy',\n\t\tUpdatedDate as date 'MM/dd/yyyy'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true,\n\tpartitionBy('hash', 1)) ~> SRStreamingCustomerAddressRawSource\nSRDVDSalesCustomerRawOutput, SRDVDSalesCustomerAddressesOutput join(SRDVDSalesCustomerRawOutput@CustomerID == SRDVDSalesCustomerAddressesOutput@CustomerID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinCustomertoAddy\nJoinCustomertoAddy derive(sourcesystemid = \"southridgedvd\",\n\t\tMasterCreateDate = greatest(SRDVDSalesCustomerAddressesOutput@CreatedDate,SRDVDSalesCustomerRawOutput@CreatedDate ),\n\t\tMasterUpdateDate = greatest(SRDVDSalesCustomerRawOutput@UpdatedDate,SRDVDSalesCustomerAddressesOutput@UpdatedDate),\n\t\tGlobalCustomerID = uuid()) ~> DerivedColumnsForCustomerDim\nSRStreamingCustomerRawOutput, SRStreamingCustomerAddressRawSource join(SRStreamingCustomerRawOutput@CustomerID == SRStreamingCustomerAddressRawSource@CustomerID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinCustomerToAddyStreaming\nJoinCustomerToAddyStreaming derive(sourcesystemid = \"southridgestreaming\",\n\t\tMasterCreateDate = greatest(SRStreamingCustomerAddressRawSource@CreatedDate, SRStreamingCustomerRawOutput@CreatedDate),\n\t\tMasterUpdateDate = greatest(SRStreamingCustomerAddressRawSource@UpdatedDate, SRStreamingCustomerRawOutput@UpdatedDate),\n\t\tGlobalCustomerID = uuid()) ~> DerivedColumnsForStreamingCustomers\nDVDCustomerColSelect, StreamingCustomerColSelect union(byName: true)~> UnionCustomers\nDerivedColumnsForCustomerDim select(mapColumn(\n\t\tCustomerID = SRDVDSalesCustomerRawOutput@CustomerID,\n\t\tLastName,\n\t\tFirstName,\n\t\tPhoneNumber,\n\t\tAddressID,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tState,\n\t\tZipCode,\n\t\tsourcesystemid,\n\t\tCreatedDate = MasterCreateDate,\n\t\tUpdatedDate = MasterUpdateDate,\n\t\tGlobalCustomerID\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> DVDCustomerColSelect\nDerivedColumnsForStreamingCustomers select(mapColumn(\n\t\tCustomerID = SRStreamingCustomerRawOutput@CustomerID,\n\t\tLastName,\n\t\tFirstName,\n\t\tPhoneNumber,\n\t\tAddressID,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tState,\n\t\tZipCode,\n\t\tsourcesystemid,\n\t\tCreatedDate = MasterCreateDate,\n\t\tUpdatedDate = MasterUpdateDate,\n\t\tGlobalCustomerID\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> StreamingCustomerColSelect\nUnionCustomers sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['CustomerDim'],\n\tmapColumn(\n\t\tCustomerID,\n\t\tLastName,\n\t\tFirstName,\n\t\tPhoneNumber,\n\t\tAddressID,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tState,\n\t\tZipCode,\n\t\tsourcesystemid,\n\t\tCreatedDate,\n\t\tUpdatedDate,\n\t\tGlobalCustomerID\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapOutputs: true) ~> WritetoCustomerDimCurated"
+					"script": "source(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as timestamp,\n\t\tUpdatedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true,\n\tpartitionBy('hash', 1)) ~> SRDVDSalesCustomerRawOutput\nsource(output(\n\t\tAddressID as string,\n\t\tCustomerID as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as string,\n\t\tCreatedDate as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS',\n\t\tUpdatedDate as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> SRDVDSalesCustomerAddressesOutput\nsource(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS',\n\t\tUpdatedDate as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true) ~> SRStreamingCustomerRawOutput\nsource(output(\n\t\tAddressID as string,\n\t\tCustomerID as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as string,\n\t\tCreatedDate as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS',\n\t\tUpdatedDate as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true,\n\tpartitionBy('hash', 1)) ~> SRStreamingCustomerAddressRawSource\nsource(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as date 'yyyy-MM-dd',\n\t\tUpdatedDate as date 'yyyy-MM-dd'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true,\n\tpartitionBy('hash', 1)) ~> FourthCoffeeCustomer\nsource(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as string,\n\t\tPhoneNumber as string,\n\t\tCreatedDate as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS',\n\t\tUpdatedDate as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinferDriftedColumnTypes: true,\n\tpartitionBy('hash', 1)) ~> VanArsdaleCustomer\nSRDVDSalesCustomerRawOutput, SRDVDSalesCustomerAddressesOutput join(SRDVDSalesCustomerRawOutput@CustomerID == SRDVDSalesCustomerAddressesOutput@CustomerID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinCustomertoAddy\nJoinCustomertoAddy derive(sourcesystemid = \"southridgedvd\",\n\t\tMasterCreateDate = greatest(SRDVDSalesCustomerAddressesOutput@CreatedDate,SRDVDSalesCustomerRawOutput@CreatedDate ),\n\t\tMasterUpdateDate = greatest(SRDVDSalesCustomerRawOutput@UpdatedDate,SRDVDSalesCustomerAddressesOutput@UpdatedDate),\n\t\tGlobalCustomerID = uuid()) ~> DerivedColumnsForCustomerDim\nSRStreamingCustomerRawOutput, SRStreamingCustomerAddressRawSource join(SRStreamingCustomerRawOutput@CustomerID == SRStreamingCustomerAddressRawSource@CustomerID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinCustomerToAddyStreaming\nJoinCustomerToAddyStreaming derive(sourcesystemid = \"southridgestreaming\",\n\t\tMasterCreateDate = greatest(SRStreamingCustomerAddressRawSource@CreatedDate, SRStreamingCustomerRawOutput@CreatedDate),\n\t\tMasterUpdateDate = greatest(SRStreamingCustomerAddressRawSource@UpdatedDate, SRStreamingCustomerRawOutput@UpdatedDate),\n\t\tGlobalCustomerID = uuid()) ~> DerivedColumnsForStreamingCustomers\nDVDCustomerColSelect, StreamingCustomerColSelect, FourthCoffeeSelect, DerivedColumnVanArsdale union(byName: true)~> UnionCustomers\nDerivedColumnsForCustomerDim select(mapColumn(\n\t\tCustomerID = SRDVDSalesCustomerRawOutput@CustomerID,\n\t\tLastName,\n\t\tFirstName,\n\t\tPhoneNumber,\n\t\tAddressID,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tState,\n\t\tZipCode,\n\t\tsourcesystemid,\n\t\tCreatedDate = MasterCreateDate,\n\t\tUpdatedDate = MasterUpdateDate,\n\t\tGlobalCustomerID\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> DVDCustomerColSelect\nDerivedColumnsForStreamingCustomers select(mapColumn(\n\t\tCustomerID = SRStreamingCustomerRawOutput@CustomerID,\n\t\tLastName,\n\t\tFirstName,\n\t\tPhoneNumber,\n\t\tAddressID,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tState,\n\t\tZipCode,\n\t\tsourcesystemid,\n\t\tCreatedDate = MasterCreateDate,\n\t\tUpdatedDate = MasterUpdateDate,\n\t\tGlobalCustomerID\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> StreamingCustomerColSelect\nFourthCoffeeCustomer derive(sourcesystemid = \"FourthCoffee\",\n\t\tCreatedDateToTimeStamp = toTimestamp(concat(toString(CreatedDate, 'yyyy-MM-dd'),\" 00:00:00.0000000\"),'yyyy-MM-dd HH:mm:ss.SSSSSSS'),\n\t\tUpdatedDateToTimeStamp = toTimestamp(concat(toString(UpdatedDate, 'yyyy-MM-dd'),\" 00:00:00.0000000\"),'yyyy-MM-dd HH:mm:ss.SSSSSSS'),\n\t\tGlobalCustomerID = uuid()) ~> DerivedColumnFourthCoffee\nVanArsdaleCustomer derive(sourcesystemid = \"VanArsdale\",\n\t\tGlobalCustomerID = uuid()) ~> DerivedColumnVanArsdale\nDerivedColumnFourthCoffee select(mapColumn(\n\t\tCustomerID,\n\t\tLastName,\n\t\tFirstName,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tState,\n\t\tZipCode,\n\t\tPhoneNumber,\n\t\tsourcesystemid,\n\t\tCreatedDate = CreatedDateToTimeStamp,\n\t\tUpdatedDate = UpdatedDateToTimeStamp,\n\t\tGlobalCustomerID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> FourthCoffeeSelect\nUnionCustomers sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['CustomerDim'],\n\tmapColumn(\n\t\tCustomerID,\n\t\tLastName,\n\t\tFirstName,\n\t\tPhoneNumber,\n\t\tAddressID,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tState,\n\t\tZipCode,\n\t\tsourcesystemid,\n\t\tCreatedDate,\n\t\tUpdatedDate,\n\t\tGlobalCustomerID\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapOutputs: true) ~> WritetoCustomerDimCurated"
 				}
 			},
 			"dependsOn": [
@@ -2762,6 +2935,8 @@
 				"[concat(variables('factoryId'), '/datasets/SRDVDSalesCustomerAddressesFlatFile')]",
 				"[concat(variables('factoryId'), '/datasets/SRStreamingCustomerFlatFile')]",
 				"[concat(variables('factoryId'), '/datasets/SRStreamingCustomerAddyFlatFile')]",
+				"[concat(variables('factoryId'), '/datasets/FourthCoffeeCustomerRaw')]",
+				"[concat(variables('factoryId'), '/datasets/VanArsdaleRaw')]",
 				"[concat(variables('factoryId'), '/datasets/CustomerDimCurated')]"
 			]
 		},
