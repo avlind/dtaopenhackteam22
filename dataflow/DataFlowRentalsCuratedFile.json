@@ -1,0 +1,49 @@
+{
+	"name": "DataFlowRentalsCuratedFile",
+	"properties": {
+		"description": "Import data from FourthCoffeeADLSSourceTransactions",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "FourthCoffeeDataLakeSourceTransactions",
+						"type": "DatasetReference"
+					},
+					"name": "FourthCoffeeSourceFiles"
+				},
+				{
+					"dataset": {
+						"referenceName": "VanArsdaleADLSSourceTransactions",
+						"type": "DatasetReference"
+					},
+					"name": "VanArsdaleSourceFiles"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DVDRentalTransactionsSink",
+						"type": "DatasetReference"
+					},
+					"name": "DVDRentalTransactions"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FourthCoffeeDerivedColumns"
+				},
+				{
+					"name": "VanArsdaleDerivedColumns"
+				},
+				{
+					"name": "UnionFourthCoffeeAndVanArsdaleTxn"
+				},
+				{
+					"name": "VanArsdaleSelectColumns"
+				}
+			],
+			"script": "source(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tRentalDate as date 'yyyyMMdd',\n\t\tReturnDate as date 'yyyyMMdd',\n\t\tRentalCost as double,\n\t\tLateFee as double,\n\t\tRewindFlag as boolean,\n\t\tCreatedDate as date 'yyyy-MM-dd',\n\t\tUpdatedDate as date 'yyyy-MM-dd'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> FourthCoffeeSourceFiles\nsource(output(\n\t\tTransactionID as string,\n\t\tCustomerID as string,\n\t\tMovieID as string,\n\t\tRentalDate as date 'yyyyMMdd',\n\t\tReturnDate as date 'yyyyMMdd',\n\t\tRentalCost as double,\n\t\tLateFee as double,\n\t\tRewindFlag as boolean,\n\t\tCreatedDate as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS',\n\t\tUpdatedDate as timestamp 'yyyy-MM-dd HH:mm:ss.SSSSSSS'\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> VanArsdaleSourceFiles\nFourthCoffeeSourceFiles derive(SourceSystemNm = \"FourthCoffee\") ~> FourthCoffeeDerivedColumns\nVanArsdaleSourceFiles derive(SourceSystemNm = \"VanArsdale\",\n\t\tCreatedDateNew = toDate(toString(CreatedDate, 'yyyy-MM-dd HH:mm:ss.SS'), 'yyyy-MM-dd'),\n\t\tUpdatedDateNew = toDate(toString(UpdatedDate, 'yyyy-MM-dd HH:mm:ss.SS'), 'yyyy-MM-dd')) ~> VanArsdaleDerivedColumns\nFourthCoffeeDerivedColumns, VanArsdaleSelectColumns union(byName: true)~> UnionFourthCoffeeAndVanArsdaleTxn\nVanArsdaleDerivedColumns select(mapColumn(\n\t\tTransactionID,\n\t\tCustomerID,\n\t\tMovieID,\n\t\tRentalDate,\n\t\tReturnDate,\n\t\tRentalCost,\n\t\tLateFee,\n\t\tRewindFlag,\n\t\tSourceSystemNm,\n\t\tCreatedDate = CreatedDateNew,\n\t\tUpdatedDate = UpdatedDateNew\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> VanArsdaleSelectColumns\nUnionFourthCoffeeAndVanArsdaleTxn sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['DVDRentalDetails'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> DVDRentalTransactions"
+		}
+	}
+}
