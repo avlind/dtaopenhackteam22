@@ -13,8 +13,12 @@
 				}
 			],
 			"sinks": [],
-			"transformations": [],
-			"script": "source(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as long,\n\t\tAddressID as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as integer,\n\t\tsourcesystemid as string,\n\t\tCreatedDate as timestamp,\n\t\tUpdatedDate as timestamp,\n\t\tGlobalCustomerID as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> CustomerCurated"
+			"transformations": [
+				{
+					"name": "SelectCustomerCuratedFieldsForDW"
+				}
+			],
+			"script": "source(output(\n\t\tCustomerID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tPhoneNumber as long,\n\t\tAddressID as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tZipCode as integer,\n\t\tsourcesystemid as string,\n\t\tCreatedDate as timestamp,\n\t\tUpdatedDate as timestamp,\n\t\tGlobalCustomerID as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> CustomerCurated\nCustomerCurated select(mapColumn(\n\t\tCustomerID,\n\t\tLastName,\n\t\tFirstName,\n\t\tPhoneNumber,\n\t\tAddressID,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tState,\n\t\tZipCode,\n\t\tsourcesystemid,\n\t\tCreatedDate,\n\t\tUpdatedDate,\n\t\tGlobalCustomerID\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCustomerCuratedFieldsForDW"
 		}
 	}
 }
