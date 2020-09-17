@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
 		},
+		"MDWOH_Team22_SQLDW_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'MDWOH_Team22_SQLDW'"
+		},
 		"SouthRidgeMovieCosmosDB_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SouthRidgeMovieCosmosDB'"
@@ -71,6 +75,19 @@
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
 					"connectionString": "[parameters('AzureSqlDatabase1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MDWOH_Team22_SQLDW')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('MDWOH_Team22_SQLDW_connectionString')]"
 				}
 			},
 			"dependsOn": []
@@ -593,44 +610,6 @@
 					},
 					{
 						"name": "ActorID",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/datalake')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/FouthCoffeeMovieOnlineMovieRawFile')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "datalake",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "OnlineMovieMappings.csv",
-						"folderPath": "FourthCoffee",
-						"fileSystem": "mdwsourcefiles"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "MovieID",
-						"type": "String"
-					},
-					{
-						"name": "OnlineMovieID",
 						"type": "String"
 					}
 				]

@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'FourthCoffeeVM'"
 		},
+		"MDWOH_Team22_SQLDW_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'MDWOH_Team22_SQLDW'"
+		},
 		"SouthRidgeMovieCosmosDB_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SouthRidgeMovieCosmosDB'"
@@ -83,6 +87,9 @@
 					},
 					"AzureSqlDatabase1_connectionString": {
 						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
+					},
+					"MDWOH_Team22_SQLDW_connectionString": {
+						"value": "[parameters('MDWOH_Team22_SQLDW_connectionString')]"
 					},
 					"SouthRidgeMovieCosmosDB_connectionString": {
 						"value": "[parameters('SouthRidgeMovieCosmosDB_connectionString')]"

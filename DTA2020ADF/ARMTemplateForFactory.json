@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'FourthCoffeeVM'"
 		},
+		"MDWOH_Team22_SQLDW_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'MDWOH_Team22_SQLDW'"
+		},
 		"SouthRidgeMovieCosmosDB_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SouthRidgeMovieCosmosDB'"
@@ -1403,6 +1407,37 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/MDWOH_Team22_Ratings')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MDWOH_Team22_SQLDW",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "MovieRatingSK",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "MovieRatingDescription",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "DimRatings"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MDWOH_Team22_SQLDW')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MovieCatalogCuratedFile')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2625,6 +2660,19 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/MDWOH_Team22_SQLDW')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('MDWOH_Team22_SQLDW_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SouthRidgeMovieCosmosDB')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -3046,6 +3094,89 @@
 				"[concat(variables('factoryId'), '/datasets/FourthCoffeeDataLakeSourceTransactions')]",
 				"[concat(variables('factoryId'), '/datasets/VanArsdaleADLSSourceTransactions')]",
 				"[concat(variables('factoryId'), '/datasets/DVDRentalTransactionsSink')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LoadRatingsDW')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "MovieCatalogCuratedFile",
+								"type": "DatasetReference"
+							},
+							"name": "CuratedMovies"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "MDWOH_Team22_Ratings",
+								"type": "DatasetReference"
+							},
+							"name": "LoadMovieRatingsTableDW"
+						}
+					],
+					"transformations": [
+						{
+							"name": "ExtractMovieRatings"
+						},
+						{
+							"name": "GroupMovieRatings"
+						}
+					],
+					"script": "source(output(\n\t\tActorName as string,\n\t\tPhysicalAvailabilityDate as timestamp,\n\t\tGenre as string,\n\t\tRating as string,\n\t\tTheatricalReleaseYear as short,\n\t\tRuntimeMinutes as short,\n\t\tStreamingAvailabilityDate as timestamp,\n\t\tTitle as string,\n\t\tSourceSystemMovieID as string,\n\t\tSouthridgeMovieID as string,\n\t\tSourceSystemID as string,\n\t\tGlobalMovieID as string,\n\t\tActorID as string,\n\t\tGender as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> CuratedMovies\nCuratedMovies select(mapColumn(\n\t\tRating\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ExtractMovieRatings\nExtractMovieRatings aggregate(groupBy(Rating),\n\tCountMovieRatings = count(1)) ~> GroupMovieRatings\nGroupMovieRatings sink(input(\n\t\tMovieRatingSK as integer,\n\t\tMovieRatingDescription as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tstaged: false,\n\tmapColumn(\n\t\tMovieRatingDescription = Rating\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> LoadMovieRatingsTableDW"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/MovieCatalogCuratedFile')]",
+				"[concat(variables('factoryId'), '/datasets/MDWOH_Team22_Ratings')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MovieRatingsDWLoadPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "LoadRatingsDW",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "LoadRatingsDW",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"CuratedMovies": {},
+									"LoadMovieRatingsTableDW": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/LoadRatingsDW')]"
 			]
 		}
 	]

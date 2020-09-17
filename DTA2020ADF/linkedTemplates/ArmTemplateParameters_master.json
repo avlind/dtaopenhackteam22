@@ -17,6 +17,9 @@
 		"FourthCoffeeVM_password": {
 			"value": ""
 		},
+		"MDWOH_Team22_SQLDW_connectionString": {
+			"value": ""
+		},
 		"SouthRidgeMovieCosmosDB_connectionString": {
 			"value": ""
 		},
