@@ -1,0 +1,49 @@
+{
+	"name": "FouthCoffeeMovieRawFile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "datalake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Movies.csv",
+				"folderPath": "FourthCoffee",
+				"fileSystem": "mdwsourcefiles"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "MovieID",
+				"type": "String"
+			},
+			{
+				"name": "MovieTitle",
+				"type": "String"
+			},
+			{
+				"name": "Category",
+				"type": "String"
+			},
+			{
+				"name": "Rating",
+				"type": "String"
+			},
+			{
+				"name": "RunTimeMin",
+				"type": "String"
+			},
+			{
+				"name": "ReleaseDate",
+				"type": "String"
+			}
+		]
+	}
+}

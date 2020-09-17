@@ -1,0 +1,33 @@
+{
+	"name": "VanArsdelOnlineMoviesRawFile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "datalake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "dboOnlineMovieMappings.txt",
+				"folderPath": "VanArsdel",
+				"fileSystem": "mdwsourcefiles"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "MovieID",
+				"type": "String"
+			},
+			{
+				"name": "OnlineMovieID",
+				"type": "String"
+			}
+		]
+	}
+}
