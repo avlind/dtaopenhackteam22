@@ -1,0 +1,26 @@
+{
+	"name": "DWCategories",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MDWOH_Team22_SQLDW",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "MovieCategorySK",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "MovieCategoryDescription",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "DimCategories"
+		}
+	}
+}
